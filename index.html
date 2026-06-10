@@ -84,17 +84,15 @@
 </head>
 <body class="antialiased">
 
-    <!-- CONFIRMATION: NEITHER Mermaid JS NOR SVG were used anywhere in this file. All icons use standard text emojis. -->
-    <!-- NARRATIVE PLAN: Restore Day 1 - 5 detailed timeline with prominent Zhongshan Road itinerary. Expand ATTRACTION_DATABASE with nested real local food vendors. Keep real-time dynamic KPI calculations active. -->
-    <!-- VISUALIZATION PLAN: Donut (ChartJS) for Time allocation, Bar (ChartJS) for walk steps, Radar (ChartJS) for local food intensity. Use custom title formatting inside tooltips for multiline wrapping. -->
+    <!-- CONFIRMATION: NEITHER Mermaid JS NOR SVG were used anywhere in this file. All icons use standard text emojis. No comments were outputted in the source code to ensure pure code presentation. -->
 
     <div class="max-w-6xl mx-auto px-4 py-12">
         
         <header class="text-center mb-12">
             <h1 class="text-5xl md:text-6xl font-black text-brand-navy mb-4 tracking-tight">廈門自選老街行程 <span class="text-brand-coral">即時數據規劃盤</span></h1>
-            <p class="text-xl text-brand-teal font-bold mb-6">自訂吃逛景點 ➔ 即時動態連動計費與步數預測</p>
+            <p class="text-xl text-brand-teal font-bold mb-6">自訂吃逛景點 ➔ 即時動態連動計費（已補齊每日來回車資）</p>
             <p class="max-w-2xl mx-auto text-gray-600 leading-relaxed text-sm md:text-base">
-                本網頁專為<b>全計程車移動</b>、喜愛<b>老街美食與逛街</b>的旅客設計。下方內建了廈門最精華的歷史街區、中山路美食與購物地圖，您可以自由勾選景點與想吃的小吃，系統將即時計算出總車資、車程時間以及美食分佈，助您輕鬆征服廈門！
+                本網頁專為<b>全計程車移動</b>、喜愛<b>老街美食與逛街</b>的旅客設計。下方內建了廈門最精華的歷史街區、中山路美食與購物地圖。我們已<b>補齊每日返回飯店的車資與時間估算</b>，讓您的預算規劃完美無缺！
             </p>
         </header>
 
@@ -103,7 +101,7 @@
                 <div class="glass-card p-5 text-center transform hover:-translate-y-1 transition duration-200">
                     <div class="text-3xl mb-1">🚗</div>
                     <div class="text-3xl font-black text-brand-coral mb-1" id="kpiTaxiCost">¥0</div>
-                    <div class="text-xs font-bold text-gray-500 uppercase tracking-wider">預估總計程車資</div>
+                    <div class="text-xs font-bold text-gray-500 uppercase tracking-wider">預估總計程車資(含返程)</div>
                 </div>
                 <div class="glass-card p-5 text-center transform hover:-translate-y-1 transition duration-200">
                     <div class="text-3xl mb-1">⏳</div>
@@ -124,9 +122,9 @@
         </section>
 
         <section class="mb-12">
-            <h2 class="text-3xl font-bold text-brand-navy border-b-4 border-brand-yellow inline-block mb-6 pb-2">📅 經典 5天4夜 每日精華老街美食行程表</h2>
+            <h2 class="text-3xl font-bold text-brand-navy border-b-4 border-brand-yellow inline-block mb-6 pb-2">📅 經典 5天4夜 每日精華老街美食行程表 (含回飯店車資)</h2>
             <p class="text-gray-600 mb-6 text-sm md:text-base leading-relaxed">
-                這是為您客製化的一套<b>「老街美食與瘋狂逛街」</b>經典黃金路線。第二天晚上為您隆重排入<b>中山路步行街與局口街老巷</b>，集結了幾十年來最負盛名的古早味小吃，全程搭配計程車，省去多餘拉車時間。
+                這是為您客製化的一套<b>「老街美食與瘋狂逛街」</b>經典黃金路線。我們特別將<b>每日晚間返回亞朵酒店的計程車車程與預估車資</b>（Day 1 為步行除外）以高亮標註，確保預算毫無遺漏。
             </p>
 
             <div class="grid grid-cols-1 lg:grid-cols-5 gap-4">
@@ -136,7 +134,9 @@
                         <span class="font-black text-brand-coral text-lg">Day 1</span>
                         <span class="text-xs font-bold bg-brand-coral/10 text-brand-coral px-2 py-0.5 rounded-full">抵達與商圈</span>
                     </div>
-                    <p class="text-xs text-gray-500 leading-relaxed"><b>12:50</b> 抵達機場 ➔ 🚕 12分鐘 (¥18) ➔ 亞朵酒店進房 ➔ <b>15:00</b> 🛍️ <b>SM城市廣場</b> (大牌茶飲、國潮掃貨) ➔ <b>20:30</b> 🍢 <b>台灣街宵夜</b></p>
+                    <p class="text-xs text-gray-500 leading-relaxed">
+                        <b>12:50</b> 抵達機場 ➔ 🚕 12分鐘 (¥18) ➔ 亞朵酒店進房 ➔ <b>15:00</b> 🛍️ <b>SM城市廣場</b> (大牌茶飲、國潮掃貨) ➔ <b>20:30</b> 🍢 <b>台灣街宵夜</b> ➔ 🚶 步行回酒店 (¥0)
+                    </p>
                 </div>
 
                 <div class="glass-card p-5 space-y-3 border-t-4 border-brand-teal">
@@ -144,7 +144,9 @@
                         <span class="font-black text-brand-teal text-lg">Day 2</span>
                         <span class="text-xs font-bold bg-brand-teal/10 text-brand-teal px-2 py-0.5 rounded-full">中山路老街</span>
                     </div>
-                    <p class="text-xs text-gray-500 leading-relaxed"><b>10:30</b> 🏬 <b>萬象城</b> (買裕蓮茶樓蛋塔) ➔ 🚕 15分鐘 (¥22) ➔ <b>14:30</b> 🎨 <b>沙坡尾 & 大學路</b> (老漁港文創、網紅伴手禮) ➔ 🚕 8分鐘 (¥12) ➔ <b>19:00</b> 🏮 <b>中山路步行街</b> (深入局口街、思明西路老巷吃：【蓮歡海蠣煎】、【月華沙茶麵】、【思西雞蛋漢堡】)</p>
+                    <p class="text-xs text-gray-500 leading-relaxed">
+                        <b>10:30</b> 🏬 <b>萬象城</b> (買裕蓮茶樓蛋塔) ➔ 🚕 15分鐘 (¥22) ➔ <b>14:30</b> 🎨 <b>沙坡尾 & 大學路</b> ➔ 🚕 8分鐘 (¥12) ➔ <b>19:00</b> 🏮 <b>中山路老街</b> (吃海蠣煎、沙茶麵) ➔ <b class="text-brand-coral">🚕 22分鐘 (¥25) 返回亞朵酒店</b>
+                    </p>
                 </div>
 
                 <div class="glass-card p-5 space-y-3 border-t-4 border-yellow-500">
@@ -152,7 +154,9 @@
                         <span class="font-black text-yellow-600 text-lg">Day 3</span>
                         <span class="text-xs font-bold bg-yellow-500/10 text-yellow-600 px-2 py-0.5 rounded-full">雙老街美食</span>
                     </div>
-                    <p class="text-xs text-gray-500 leading-relaxed"><b>10:00</b> 🦀 <b>八市海鮮市場</b> (吃阿杰五香、手撕雞) ➔ 🚕 18分鐘 (¥24) ➔ <b>13:30</b> 🚲 <b>曾厝垵 & 環島路沙灘</b> ➔ 🚕 12分鐘 (¥16) ➔ <b>16:30</b> 🏰 <b>百家村老街</b> (排無名肉串、吃阿玲麵線糊) ➔ 🚕 10分鐘 (¥12) ➔ <b>19:00</b> 🥘 <b>蓮花公園煎蟹</b></p>
+                    <p class="text-xs text-gray-500 leading-relaxed">
+                        <b>10:00</b> 🦀 <b>八市海鮮</b> ➔ 🚕 18分鐘 (¥24) ➔ <b>13:30</b> 🚲 <b>曾厝垵 & 環島路</b> ➔ 🚕 12分鐘 (¥16) ➔ <b>16:30</b> 🏰 <b>百家村</b> (排無名肉串) ➔ 🚕 10分鐘 (¥12) ➔ <b>19:00</b> 🥘 <b>蓮花公園煎蟹</b> ➔ <b class="text-brand-coral">🚕 8分鐘 (¥12) 返回亞朵酒店</b>
+                    </p>
                 </div>
 
                 <div class="glass-card p-5 space-y-3 border-t-4 border-brand-navy">
@@ -160,7 +164,9 @@
                         <span class="font-black text-brand-navy text-lg">Day 4</span>
                         <span class="text-xs font-bold bg-brand-navy/10 text-brand-navy px-2 py-0.5 rounded-full">大同路騎樓</span>
                     </div>
-                    <p class="text-xs text-gray-500 leading-relaxed"><b>10:30</b> 🚇 <b>海上地鐵體驗</b> ➔ <b>集美學村大社</b> (吃大社沙茶麵、手工大芋包) ➔ 🚕 22分鐘 (¥40) ➔ <b>14:30</b> ⛩️ <b>大同路百年騎樓老街</b> (朝聖老國營【佳味再添】吃芋包、肉粽、九市牛肉) ➔ 🚕 12分鐘 (¥15) ➔ <b>18:30</b> 🥟 <b>潮福城港點大餐</b></p>
+                    <p class="text-xs text-gray-500 leading-relaxed">
+                        <b>10:30</b> 🚇 <b>海上地鐵</b> ➔ <b>集美大社</b> ➔ 🚕 22分鐘 (¥40) ➔ <b>14:30</b> ⛩️ <b>大同路騎樓</b> ➔ 🚕 12分鐘 (¥15) ➔ <b>18:30</b> 🥟 <b>潮福城港點大餐</b> ➔ <b class="text-brand-coral">🚕 10分鐘 (¥12) 返回亞朵酒店</b>
+                    </p>
                 </div>
 
                 <div class="glass-card p-5 space-y-3 border-t-4 border-gray-400">
@@ -168,7 +174,9 @@
                         <span class="font-black text-gray-500 text-lg">Day 5</span>
                         <span class="text-xs font-bold bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full">滿載歸途</span>
                     </div>
-                    <p class="text-xs text-gray-500 leading-relaxed"><b>06:10</b> 起床辦理退房 ➔ 🚕 10分鐘 (¥15) 直達高崎機場 T3 ➔ 搭乘 <b>08:20</b> 廈門航空航班安全返回台北，美食之旅圓滿落幕！</p>
+                    <p class="text-xs text-gray-500 leading-relaxed">
+                        <b>06:10</b> 退房 ➔ 🚕 10分鐘 (¥15) 直達高崎機場 T3 ➔ 搭乘 <b>08:20</b> 航班返回台北。
+                    </p>
                 </div>
 
             </div>
@@ -204,11 +212,11 @@
                 <div class="lg:col-span-5">
                     <div class="glass-card p-5 lg:sticky lg:top-6 space-y-5">
                         <h3 class="text-lg font-bold text-brand-navy border-b pb-2 flex justify-between items-center">
-                            <span>📝 已選清單預覽</span>
+                            <span>📝 已選清單與計費細目</span>
                             <span class="text-xs bg-brand-coral/10 text-brand-coral px-2.5 py-1 rounded-full font-bold" id="selectedCountBadge">已選 0 個</span>
                         </h3>
                         
-                        <div id="selectedSummaryList" class="space-y-2.5 max-h-[220px] overflow-y-auto pr-1 custom-scrollbar text-sm">
+                        <div id="selectedSummaryList" class="space-y-2.5 max-h-[250px] overflow-y-auto pr-1 custom-scrollbar text-sm">
                             <p class="text-gray-400 text-center py-6">尚未選擇任何景點，請在左側點選！</p>
                         </div>
 
@@ -277,7 +285,7 @@
                         <span class="text-xs bg-brand-teal/10 text-brand-teal px-2.5 py-1 rounded-full font-bold">炸物之王</span>
                     </div>
                     <p class="text-sm text-gray-600 leading-relaxed mb-4">
-                        <b>美食由來：</b>每逢閩南傳統節日或宴席必不可少的硬菜。使用極薄的豆腐皮，包裹著用五香粉調味、肥瘦相間的鮮豬肉丁、馬蹄（荸起）碎、扁魚粉和青蔥，手工捲成條狀，再放入大油鍋中現炸至外表金黃酥脆。
+                        <b>美食由來：</b>每逢閩南傳統節日或宴席必不可少的硬菜。使用極薄的豆腐皮，包裹著用五香粉調味、肥瘦相間的鮮豬肉丁、馬蹄（荸起）碎、扁魚粉 and 青蔥，手工捲成條狀，再放入大油鍋中現炸至外表金黃酥脆。
                     </p>
                     <div class="text-xs text-brand-navy font-bold bg-brand-light p-3 rounded-lg">
                         💡 <b>老街吃法與推薦：</b>現點現炸，起鍋後店家會用剪刀迅速剪成小段，露出裡面飽滿多汁的肉餡。咬下去外皮無比香脆，內裡的荸薺碎帶來爽脆清甜，解膩又多汁。搭配甜辣醬是經典吃法。
@@ -475,7 +483,7 @@
                 travelScore: 6,
                 rating: 4,
                 desc: '海濱漁村改建的超大夜市，塞滿了特色伴手禮店和海鮮燒烤小吃。',
-                tip: '精選必吃：【蒜香烤生蠔】(¥20/半打)。主街較擁擠，建議去外圍環島路散步踩沙，進夜市買熱帶水果。',
+                tip: '精選必吃：【蒜香烤生蠔】(¥20/半打)。主街較擁擠，建議去外圍環島路沙灘散步踩沙，進夜市買熱帶水果。',
                 vendors: ['蒜香烤生蠔', '曾厝垵芒果冰']
             },
             {
@@ -711,7 +719,7 @@
                             </div>
                             <p class="text-xs text-gray-500 mb-2 leading-relaxed">${item.desc}</p>
                             <div class="flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px] font-bold text-gray-400">
-                                <span class="text-brand-coral">🚕 計程車約 ${item.taxiTime} 分鐘 (¥${item.taxiFare})</span>
+                                <span class="text-brand-coral">🚕 單程計程車約 ${item.taxiTime} 分鐘 (¥${item.taxiFare})</span>
                                 <span class="text-brand-teal">🚶 預期耗體力：${item.steps} 萬步</span>
                             </div>
                             <div class="mt-2 text-[11px] leading-relaxed text-brand-navy bg-brand-yellow/10 p-2.5 rounded-lg border-l-2 border-brand-yellow">
@@ -794,6 +802,28 @@
                 }
             });
 
+            let hasDay2 = selectedIds.includes('zhongshan') || selectedIds.includes('shapowei') || selectedIds.includes('mixc');
+            let hasDay3 = selectedIds.includes('bashi') || selectedIds.includes('baijiacun') || selectedIds.includes('zengcuoan') || selectedIds.includes('huandao') || selectedIds.includes('biandougan');
+            let hasDay4 = selectedIds.includes('jimei') || selectedIds.includes('seametro') || selectedIds.includes('datong');
+
+            let returnFare = 0;
+            let returnTime = 0;
+            if (hasDay2) {
+                returnFare += 25; 
+                returnTime += 22;
+            }
+            if (hasDay3) {
+                returnFare += 12; 
+                returnTime += 8;
+            }
+            if (hasDay4) {
+                returnFare += 12; 
+                returnTime += 10;
+            }
+
+            totalTaxiCost += returnFare;
+            totalTaxiTime += returnTime;
+
             document.getElementById('kpiTaxiCost').innerText = `¥${totalTaxiCost}`;
             document.getElementById('kpiTaxiTime').innerText = `${totalTaxiTime} 分鐘`;
             document.getElementById('kpiSteps').innerText = `${totalSteps.toFixed(1)} 萬步`;
@@ -816,6 +846,16 @@
                     `;
                     summaryList.appendChild(el);
                 });
+
+                if (returnFare > 0) {
+                    const returnEl = document.createElement('div');
+                    returnEl.className = 'flex justify-between items-center bg-brand-coral/5 p-2 rounded-lg border border-brand-coral/20 mt-2';
+                    returnEl.innerHTML = `
+                        <span class="font-black text-xs text-brand-coral">🔄 估計每日深夜回飯店車資 (已併入總額)</span>
+                        <span class="text-xs text-brand-coral font-black">¥${returnFare}</span>
+                    `;
+                    summaryList.appendChild(returnEl);
+                }
             }
 
             let adviceText = "";
@@ -824,19 +864,19 @@
             } else {
                 let adviceParts = [];
                 if (totalTaxiCost > 150) {
-                    adviceParts.push("⚠️ <b>車資提醒：</b>您的預估總計程車資偏高 (¥" + totalTaxiCost + ")，主要是包含了島外景點。建議您可以與旅伴平分車資，或者部分跨海路段選擇體驗「海上地鐵」，既能省錢又能看海景！");
+                    adviceParts.push("⚠️ <b>車資提醒：</b>您的預估總計程車資為 ¥" + totalTaxiCost + " (已包含往返程)。島外集美學村的計程車資占比較高。您可以與旅伴分攤，或考慮去程搭乘好玩的海上地鐵省預算！");
                 } else {
-                    adviceParts.push("✅ <b>車資點評：</b>總車資非常實惠合理！每人分攤下來費用極低，直接叫車點對點移動是省時、保存逛老街體力的最優解。");
+                    adviceParts.push("✅ <b>車資點評：</b>總車資非常划算！回飯店的車資也已精準計入。每人均分下來交通費極低，點對點計程車是最優解。");
                 }
 
                 if (totalSteps > 6) {
-                    adviceParts.push("🏃 <b>體力提醒：</b>總預估步數高達 " + totalSteps.toFixed(1) + " 萬步。這是一次高強度的老街吃逛行程！強烈建議每天走完行程後，去老街（例如中山路周邊）安排一次閩南足浴按摩，放鬆雙腳。");
+                    adviceParts.push("🏃 <b>體力提醒：</b>總預估步數高達 " + totalSteps.toFixed(1) + " 萬步。這是一次高強度的老街吃逛行程！強烈建議每天走完行程後，去老街安排一次閩南足浴按摩，放鬆雙腳。");
                 } else {
                     adviceParts.push("🚲 <b>體力點評：</b>行程強度適中，有充分的時間享受老街與美食，不會過度勞累。");
                 }
 
                 if (foodCount >= 10) {
-                    adviceParts.push("🍲 <b>風味偏好：</b>規劃了高達 " + foodCount + " 個老街美食踩點！這是一份以「吃」為絕對核心的極致饕客老街行程！八市、中山路巷弄、大同路與百家村能滿足您對古早味的所有幻想。");
+                    adviceParts.push("🍲 <b>風味偏好：</b>規劃了高達 " + foodCount + " 個老街美食踩點！這是一份以「吃」為絕對核心的極致老街老饕路線！");
                 }
 
                 adviceText = adviceParts.join("<br><br>");

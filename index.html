@@ -1,0 +1,1009 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>廈門 5天4夜 自由行數據與老街備案解析</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Noto Sans TC"', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            coral: '#FF6B6B',
+                            teal: '#4ECDC4',
+                            yellow: '#FFE66D',
+                            navy: '#1A535C',
+                            light: '#F7FFF7'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #F7FFF7;
+            color: #1A535C;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 320px;
+            max-height: 380px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(26, 83, 92, 0.05);
+            border: 1px solid rgba(78, 205, 196, 0.2);
+        }
+        .timeline-node {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background-color: #FF6B6B;
+            display: inline-block;
+            position: relative;
+            z-index: 10;
+        }
+        .timeline-line {
+            position: absolute;
+            width: 4px;
+            background-color: #4ECDC4;
+            top: 24px;
+            bottom: -24px;
+            left: 6px;
+            z-index: 0;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: rgba(26, 83, 92, 0.05);
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(78, 205, 196, 0.5);
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- CONFIRMATION: NEITHER Mermaid JS NOR SVG were used anywhere in this file. All icons use standard text emojis. -->
+    <!-- NARRATIVE PLAN: Restore Day 1 - 5 detailed timeline with prominent Zhongshan Road itinerary. Expand ATTRACTION_DATABASE with nested real local food vendors. Keep real-time dynamic KPI calculations active. -->
+    <!-- VISUALIZATION PLAN: Donut (ChartJS) for Time allocation, Bar (ChartJS) for walk steps, Radar (ChartJS) for local food intensity. Use custom title formatting inside tooltips for multiline wrapping. -->
+
+    <div class="max-w-6xl mx-auto px-4 py-12">
+        
+        <header class="text-center mb-12">
+            <h1 class="text-5xl md:text-6xl font-black text-brand-navy mb-4 tracking-tight">廈門自選老街行程 <span class="text-brand-coral">即時數據規劃盤</span></h1>
+            <p class="text-xl text-brand-teal font-bold mb-6">自訂吃逛景點 ➔ 即時動態連動計費與步數預測</p>
+            <p class="max-w-2xl mx-auto text-gray-600 leading-relaxed text-sm md:text-base">
+                本網頁專為<b>全計程車移動</b>、喜愛<b>老街美食與逛街</b>的旅客設計。下方內建了廈門最精華的歷史街區、中山路美食與購物地圖，您可以自由勾選景點與想吃的小吃，系統將即時計算出總車資、車程時間以及美食分佈，助您輕鬆征服廈門！
+            </p>
+        </header>
+
+        <section class="mb-12">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div class="glass-card p-5 text-center transform hover:-translate-y-1 transition duration-200">
+                    <div class="text-3xl mb-1">🚗</div>
+                    <div class="text-3xl font-black text-brand-coral mb-1" id="kpiTaxiCost">¥0</div>
+                    <div class="text-xs font-bold text-gray-500 uppercase tracking-wider">預估總計程車資</div>
+                </div>
+                <div class="glass-card p-5 text-center transform hover:-translate-y-1 transition duration-200">
+                    <div class="text-3xl mb-1">⏳</div>
+                    <div class="text-3xl font-black text-brand-teal mb-1" id="kpiTaxiTime">0 分鐘</div>
+                    <div class="text-xs font-bold text-gray-500 uppercase tracking-wider">預估總交通耗時</div>
+                </div>
+                <div class="glass-card p-5 text-center transform hover:-translate-y-1 transition duration-200">
+                    <div class="text-3xl mb-1">👣</div>
+                    <div class="text-3xl font-black text-brand-yellow mb-1 text-yellow-500" id="kpiSteps">0 萬步</div>
+                    <div class="text-xs font-bold text-gray-500 uppercase tracking-wider">預計總步數消耗</div>
+                </div>
+                <div class="glass-card p-5 text-center transform hover:-translate-y-1 transition duration-200">
+                    <div class="text-3xl mb-1">🍲</div>
+                    <div class="text-3xl font-black text-brand-navy mb-1" id="kpiFoodCount">0 個</div>
+                    <div class="text-xs font-bold text-gray-500 uppercase tracking-wider">規劃美食打卡點</div>
+                </div>
+            </div>
+        </section>
+
+        <section class="mb-12">
+            <h2 class="text-3xl font-bold text-brand-navy border-b-4 border-brand-yellow inline-block mb-6 pb-2">📅 經典 5天4夜 每日精華老街美食行程表</h2>
+            <p class="text-gray-600 mb-6 text-sm md:text-base leading-relaxed">
+                這是為您客製化的一套<b>「老街美食與瘋狂逛街」</b>經典黃金路線。第二天晚上為您隆重排入<b>中山路步行街與局口街老巷</b>，集結了幾十年來最負盛名的古早味小吃，全程搭配計程車，省去多餘拉車時間。
+            </p>
+
+            <div class="grid grid-cols-1 lg:grid-cols-5 gap-4">
+                
+                <div class="glass-card p-5 space-y-3 border-t-4 border-brand-coral">
+                    <div class="flex justify-between items-center">
+                        <span class="font-black text-brand-coral text-lg">Day 1</span>
+                        <span class="text-xs font-bold bg-brand-coral/10 text-brand-coral px-2 py-0.5 rounded-full">抵達與商圈</span>
+                    </div>
+                    <p class="text-xs text-gray-500 leading-relaxed"><b>12:50</b> 抵達機場 ➔ 🚕 12分鐘 (¥18) ➔ 亞朵酒店進房 ➔ <b>15:00</b> 🛍️ <b>SM城市廣場</b> (大牌茶飲、國潮掃貨) ➔ <b>20:30</b> 🍢 <b>台灣街宵夜</b></p>
+                </div>
+
+                <div class="glass-card p-5 space-y-3 border-t-4 border-brand-teal">
+                    <div class="flex justify-between items-center">
+                        <span class="font-black text-brand-teal text-lg">Day 2</span>
+                        <span class="text-xs font-bold bg-brand-teal/10 text-brand-teal px-2 py-0.5 rounded-full">中山路老街</span>
+                    </div>
+                    <p class="text-xs text-gray-500 leading-relaxed"><b>10:30</b> 🏬 <b>萬象城</b> (買裕蓮茶樓蛋塔) ➔ 🚕 15分鐘 (¥22) ➔ <b>14:30</b> 🎨 <b>沙坡尾 & 大學路</b> (老漁港文創、網紅伴手禮) ➔ 🚕 8分鐘 (¥12) ➔ <b>19:00</b> 🏮 <b>中山路步行街</b> (深入局口街、思明西路老巷吃：【蓮歡海蠣煎】、【月華沙茶麵】、【思西雞蛋漢堡】)</p>
+                </div>
+
+                <div class="glass-card p-5 space-y-3 border-t-4 border-yellow-500">
+                    <div class="flex justify-between items-center">
+                        <span class="font-black text-yellow-600 text-lg">Day 3</span>
+                        <span class="text-xs font-bold bg-yellow-500/10 text-yellow-600 px-2 py-0.5 rounded-full">雙老街美食</span>
+                    </div>
+                    <p class="text-xs text-gray-500 leading-relaxed"><b>10:00</b> 🦀 <b>八市海鮮市場</b> (吃阿杰五香、手撕雞) ➔ 🚕 18分鐘 (¥24) ➔ <b>13:30</b> 🚲 <b>曾厝垵 & 環島路沙灘</b> ➔ 🚕 12分鐘 (¥16) ➔ <b>16:30</b> 🏰 <b>百家村老街</b> (排無名肉串、吃阿玲麵線糊) ➔ 🚕 10分鐘 (¥12) ➔ <b>19:00</b> 🥘 <b>蓮花公園煎蟹</b></p>
+                </div>
+
+                <div class="glass-card p-5 space-y-3 border-t-4 border-brand-navy">
+                    <div class="flex justify-between items-center">
+                        <span class="font-black text-brand-navy text-lg">Day 4</span>
+                        <span class="text-xs font-bold bg-brand-navy/10 text-brand-navy px-2 py-0.5 rounded-full">大同路騎樓</span>
+                    </div>
+                    <p class="text-xs text-gray-500 leading-relaxed"><b>10:30</b> 🚇 <b>海上地鐵體驗</b> ➔ <b>集美學村大社</b> (吃大社沙茶麵、手工大芋包) ➔ 🚕 22分鐘 (¥40) ➔ <b>14:30</b> ⛩️ <b>大同路百年騎樓老街</b> (朝聖老國營【佳味再添】吃芋包、肉粽、九市牛肉) ➔ 🚕 12分鐘 (¥15) ➔ <b>18:30</b> 🥟 <b>潮福城港點大餐</b></p>
+                </div>
+
+                <div class="glass-card p-5 space-y-3 border-t-4 border-gray-400">
+                    <div class="flex justify-between items-center">
+                        <span class="font-black text-gray-500 text-lg">Day 5</span>
+                        <span class="text-xs font-bold bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full">滿載歸途</span>
+                    </div>
+                    <p class="text-xs text-gray-500 leading-relaxed"><b>06:10</b> 起床辦理退房 ➔ 🚕 10分鐘 (¥15) 直達高崎機場 T3 ➔ 搭乘 <b>08:20</b> 廈門航空航班安全返回台北，美食之旅圓滿落幕！</p>
+                </div>
+
+            </div>
+        </section>
+
+        <section class="mb-12 bg-white rounded-2xl shadow-xl border border-brand-teal/20 p-6">
+            <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 mb-6 pb-4 border-b">
+                <div>
+                    <h2 class="text-2xl font-black text-brand-navy">🧭 智慧行程客製與計算器</h2>
+                    <p class="text-sm text-gray-500">點擊下方分類勾選景點，更可以展開<b>「隱藏美食店家」</b>一併加入您的吃貨計劃！</p>
+                </div>
+                <div class="flex flex-wrap gap-2">
+                    <button onclick="quickLoadPreset('classic')" class="px-3 py-1.5 bg-brand-coral text-white text-xs font-bold rounded-lg hover:bg-brand-coral/90 transition">載入經典老街方案</button>
+                    <button onclick="quickLoadPreset('shopping')" class="px-3 py-1.5 bg-brand-teal text-white text-xs font-bold rounded-lg hover:bg-brand-teal/90 transition">載入購物狂方案</button>
+                    <button onclick="resetAll()" class="px-3 py-1.5 bg-gray-400 text-white text-xs font-bold rounded-lg hover:bg-gray-500 transition">清空重選</button>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                
+                <div class="lg:col-span-7 space-y-6">
+                    <div class="flex flex-wrap gap-1.5 bg-gray-100 p-1 rounded-xl w-fit" id="categoryTabs">
+                        <button onclick="filterCategory('all')" id="tab-all" class="px-3 py-1 text-xs font-bold rounded-lg transition bg-white text-brand-navy shadow-sm">🔥 全部景點</button>
+                        <button onclick="filterCategory('food')" id="tab-food" class="px-3 py-1 text-xs font-bold rounded-lg transition text-gray-500 hover:text-brand-navy">🏮 老街美食</button>
+                        <button onclick="filterCategory('shopping')" id="tab-shopping" class="px-3 py-1 text-xs font-bold rounded-lg transition text-gray-500 hover:text-brand-navy">🛍️ 潮流購物</button>
+                        <button onclick="filterCategory('culture')" id="tab-culture" class="px-3 py-1 text-xs font-bold rounded-lg transition text-gray-500 hover:text-brand-navy">🚶 文創老街</button>
+                        <button onclick="filterCategory('experience')" id="tab-experience" class="px-3 py-1 text-xs font-bold rounded-lg transition text-gray-500 hover:text-brand-navy">🚇 特色體驗</button>
+                    </div>
+
+                    <div id="attractionPool" class="space-y-4 max-h-[600px] overflow-y-auto pr-2 custom-scrollbar"></div>
+                </div>
+
+                <div class="lg:col-span-5">
+                    <div class="glass-card p-5 lg:sticky lg:top-6 space-y-5">
+                        <h3 class="text-lg font-bold text-brand-navy border-b pb-2 flex justify-between items-center">
+                            <span>📝 已選清單預覽</span>
+                            <span class="text-xs bg-brand-coral/10 text-brand-coral px-2.5 py-1 rounded-full font-bold" id="selectedCountBadge">已選 0 個</span>
+                        </h3>
+                        
+                        <div id="selectedSummaryList" class="space-y-2.5 max-h-[220px] overflow-y-auto pr-1 custom-scrollbar text-sm">
+                            <p class="text-gray-400 text-center py-6">尚未選擇任何景點，請在左側點選！</p>
+                        </div>
+
+                        <div class="border-t pt-4 space-y-3">
+                            <h4 class="text-sm font-bold text-brand-navy">💡 達人即時計程車行程點評：</h4>
+                            <div id="plannerAdvice" class="p-4 rounded-xl text-xs font-medium leading-relaxed bg-brand-light border-l-4 border-brand-teal text-brand-navy">
+                                請勾選左側老街景點，我們將立即為您產生客製化的交通建議！
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+            <div class="glass-card p-6">
+                <h3 class="text-xl font-bold text-brand-navy mb-4 border-b border-brand-yellow/30 pb-2">📊 自訂行程：時間分配佔比連動</h3>
+                <div class="chart-container">
+                    <canvas id="timeAllocationChart"></canvas>
+                </div>
+            </div>
+            <div class="glass-card p-6">
+                <h3 class="text-xl font-bold text-brand-navy mb-4 border-b border-brand-yellow/30 pb-2">🚶 每日步行體力消耗動態連動</h3>
+                <div class="chart-container">
+                    <canvas id="dailyEnergyChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <section class="mb-12">
+            <div class="glass-card p-6">
+                <h3 class="text-xl font-bold text-brand-navy mb-4 border-b border-brand-yellow/30 pb-2 text-center">🍜 舌尖上的廈門風味指標即時更新</h3>
+                <div class="max-w-2xl mx-auto">
+                    <div class="chart-container" style="height: 380px;">
+                        <canvas id="foodRadarChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="mb-12">
+            <h2 class="text-3xl font-bold text-brand-navy border-b-4 border-brand-yellow inline-block mb-8 pb-2">📖 廈門老街殿堂級美食百科</h2>
+            
+            <p class="text-gray-600 mb-8 leading-relaxed text-sm md:text-base">
+                在廈門的歷史老街（如八市、大同路、百家村、大社）散步，嘴巴絕對不能停。這裡的每一道經典傳統點心背後，都有著數十年甚至百年的歲月傳承。以下為您整理最具代表性的閩南美食深度介紹與品嚐攻略：
+            </p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="glass-card p-6 border-l-4 border-brand-coral bg-white">
+                    <div class="flex justify-between items-start mb-3">
+                        <h3 class="text-xl font-black text-brand-navy">🍜 沙茶麵 (Satay Noodles)</h3>
+                        <span class="text-xs bg-brand-coral/10 text-brand-coral px-2.5 py-1 rounded-full font-bold">島內靈魂</span>
+                    </div>
+                    <p class="text-sm text-gray-600 leading-relaxed mb-4">
+                        <b>美食由來：</b>源自南洋的「沙嗲（Satay）」，由早期下南洋的閩籍華僑帶回廈門，與本土飲食融合，演變成了極具閩南特色的沙茶湯頭。正宗的沙茶湯呈亮橘紅色，以蝦皮、魚乾、洋蔥、蒜頭、芝麻以及濃郁的<b>花生醬</b>慢火熬製，口感濃郁、微辣帶甜。
+                    </p>
+                    <div class="text-xs text-brand-navy font-bold bg-brand-light p-3 rounded-lg">
+                        💡 <b>如何點餐與吃法：</b>店家通常有一大鍋滾燙的沙茶湯與配料櫃。您先選麵體（一般是鹼性的黃麵），然後自主挑選配料（推薦必加：大腸、新鮮小卷/魷魚、鴨血、豆腐吸飽湯汁）。最後淋上滾燙沙茶湯，香氣四溢。
+                    </div>
+                </div>
+
+                <div class="glass-card p-6 border-l-4 border-brand-teal bg-white">
+                    <div class="flex justify-between items-start mb-3">
+                        <h3 class="text-xl font-black text-brand-navy">🍢 閩南五香卷 (Ngoh Hiang)</h3>
+                        <span class="text-xs bg-brand-teal/10 text-brand-teal px-2.5 py-1 rounded-full font-bold">炸物之王</span>
+                    </div>
+                    <p class="text-sm text-gray-600 leading-relaxed mb-4">
+                        <b>美食由來：</b>每逢閩南傳統節日或宴席必不可少的硬菜。使用極薄的豆腐皮，包裹著用五香粉調味、肥瘦相間的鮮豬肉丁、馬蹄（荸起）碎、扁魚粉和青蔥，手工捲成條狀，再放入大油鍋中現炸至外表金黃酥脆。
+                    </p>
+                    <div class="text-xs text-brand-navy font-bold bg-brand-light p-3 rounded-lg">
+                        💡 <b>老街吃法與推薦：</b>現點現炸，起鍋後店家會用剪刀迅速剪成小段，露出裡面飽滿多汁的肉餡。咬下去外皮無比香脆，內裡的荸薺碎帶來爽脆清甜，解膩又多汁。搭配甜辣醬是經典吃法。
+                    </div>
+                </div>
+
+                <div class="glass-card p-6 border-l-4 border-brand-yellow bg-white">
+                    <div class="flex justify-between items-start mb-3">
+                        <h3 class="text-xl font-black text-brand-navy" style="color: #bfa004;">🥟 大社與大同路芋包</h3>
+                        <span class="text-xs bg-yellow-500/10 text-yellow-600 px-2.5 py-1 rounded-full font-bold">非物質文化遺產</span>
+                    </div>
+                    <p class="text-sm text-gray-600 leading-relaxed mb-4">
+                        <b>美食由來：</b>這是一道工藝複雜的手工點心。老廈門人常說「沒吃過芋包等於沒來過廈門」。芋包的外皮不含一點麵粉，而是將新鮮荔浦芋頭蒸熟後搗成極其細膩的芋泥，包裹著由筍乾、豬肉丁、香菇、蝦米和豆干製成的飽滿內餡，送入蒸籠蒸熟。
+                    </p>
+                    <div class="text-xs text-brand-navy font-bold bg-brand-light p-3 rounded-lg">
+                        💡 <b>老街吃法與推薦：</b>熱氣騰騰的芋包端上桌，外皮軟糯綿密，芋香撲鼻，內餡鹹香豐腴。最正宗的吃法必須淋上廈門特製的<b>甜辣醬</b>與<b>芥末醬</b>，甜辣中帶有一絲微嗆，風味極富層次！
+                    </div>
+                </div>
+
+                <div class="glass-card p-6 border-l-4 border-brand-navy bg-white">
+                    <div class="flex justify-between items-start mb-3">
+                        <h3 class="text-xl font-black text-brand-navy">🥣 麵線糊 (Mee Sua Kor)</h3>
+                        <span class="text-xs bg-brand-navy/10 text-brand-navy px-2.5 py-1 rounded-full font-bold">晨間市井溫柔</span>
+                    </div>
+                    <p class="text-sm text-gray-600 leading-relaxed mb-4">
+                        <b>美食由來：</b>以細如髮絲的閩南手工麵線，放入以豬骨、蝦糠慢火熬製的清甜高湯中，加入地瓜粉勾芡，熬煮到麵線化開、湯汁呈半糊狀。味道極其鮮美、順滑滑口，是無數老廈門人最愛的早餐與午後半點。
+                    </p>
+                    <div class="text-xs text-brand-navy font-bold bg-brand-light p-3 rounded-lg">
+                        💡 <b>老街吃法與推薦：</b>點一碗基礎麵線糊，然後在攤位前加料（大腸、醋肉、鮮蚵、煎蛋）。吃的時候一定要另外點一根<b>現炸油條</b>，把油條剪成段浸泡在熱騰騰的麵線糊裡，吸飽湯汁後一口咬下，非常過癮！
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="mb-12 bg-[#FFFEE0] border-2 border-brand-yellow rounded-2xl p-6">
+            <h3 class="text-xl font-black text-brand-navy mb-4 flex items-center">
+                <span>🛡️ 廈門老街吃貨「防坑與實用避坑指南」</span>
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-xs md:text-sm text-brand-navy font-medium leading-relaxed">
+                <div class="space-y-2">
+                    <h4 class="font-bold text-brand-coral text-sm">🦀 1. 海鮮大排檔點餐防坑公式</h4>
+                    <p class="text-gray-600">
+                        去八市或中山路大排檔點海鮮，<b>秤重前務必在袋子底下戳個小洞放水</b>，並向店家確認「一斤」是多少克（大陸的一斤為 500 克）。下鍋前必須問清楚「加工費」是算盤還是算隻、算斤，避免結帳時出現爭議。推薦去明碼標價、口碑極佳的老字號（如醉壹號）。
+                    </p>
+                </div>
+                <div class="space-y-2">
+                    <h4 class="font-bold text-brand-teal text-sm">🎫 2. 老國營飯堂「換票點餐」體驗</h4>
+                    <p class="text-gray-600">
+                        在大同路走訪老牌國營店<b>「佳味再添」</b>時，這裡不流行手機掃碼，您需要先去門口的「收銀台」排隊。告訴店員您要點什麼，付現或刷卡後店員會給您幾張彩色的紙質票券（如：芋包票、肉粽票）。您需要拿著票去不同的檔口排隊，憑票向大媽兌換食物，非常復古好玩！
+                    </p>
+                </div>
+                <div class="space-y-2">
+                    <h4 class="font-bold text-brand-navy text-sm">🌶️ 3. 認準老街靈魂「甜辣醬」</h4>
+                    <p class="text-gray-600">
+                        閩南小吃的精髓在於醬料。廈門本土品牌的<b>「廈門甜辣醬」</b>（如：海堤牌）味道微甜帶酸，辣度極低，是用來沾五香卷、芋包、手撕雞、海鮮大排檔的萬能配料。只要看見桌上有擺著玻璃瓶裝的粉橘色甜辣醬，大膽擠下去就對了！
+                    </p>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <script>
+        const ATTRACTION_DATABASE = [
+            {
+                id: 'zhongshan',
+                name: '中山路步行街與局口老老巷',
+                category: 'shopping',
+                categoryLabel: '潮流購物',
+                taxiTime: 22,
+                taxiFare: 25,
+                steps: 2.0,
+                foodScore: 10,
+                shopScore: 10,
+                cultureScore: 9,
+                travelScore: 8,
+                rating: 5,
+                desc: '百年南洋裝飾騎樓老街。避開主街連鎖店，鑽進思明西路與局口老巷，才是古早小吃的天下。',
+                tip: '精選必吃店家：【蓮歡海蠣煎】(局口老巷內，海蠣肥美焦香，¥25)；【月華沙茶麵】(鎮海路，沙茶湯重花生香，¥20)；【思西雞蛋漢堡】(局口街入口，雙蛋爆汁，¥8)；【豪香雞肉串】(¥10/4串，香嫩無比)；【阿卿春卷】(局口街，香甜貢糖底，¥5)。',
+                vendors: ['蓮歡海蠣煎', '月華沙茶麵', '思西雞蛋漢堡', '豪香雞肉串', '阿卿春卷', '陳佳甜品']
+            },
+            {
+                id: 'bashi',
+                name: '八市海鮮市場 (老廈門靈魂)',
+                category: 'food',
+                categoryLabel: '老街美食',
+                taxiTime: 20,
+                taxiFare: 23,
+                steps: 1.8,
+                foodScore: 10,
+                shopScore: 4,
+                cultureScore: 9,
+                travelScore: 7,
+                rating: 5,
+                desc: '廈門最生猛的本土傳統海鮮市場，兩旁塞滿了經營幾十年的地標級古早攤商。',
+                tip: '精選必吃店家：【阿杰五香】(開禾路，現炸五香條，¥4)；【朱記手撕雞】(芝麻香菜香油涼拌，¥35)；【惠源麵包店】(現炸麵包夾滷蛋，¥3)；【鐘氏沙茶麵】(¥25)；【亞本麥奶】(¥6)。',
+                vendors: ['阿杰五香', '朱記手撕雞', '惠源麵包店', '鐘氏沙茶麵', '亞本麥奶']
+            },
+            {
+                id: 'baijiacun',
+                name: '百家村歷史文化老街區',
+                category: 'food',
+                categoryLabel: '老街美食',
+                taxiTime: 13,
+                taxiFare: 16,
+                steps: 1.5,
+                foodScore: 9,
+                shopScore: 5,
+                cultureScore: 10,
+                travelScore: 8,
+                rating: 5,
+                desc: '紅磚大榕樹、極具生活氣息的華僑老洋房別墅群。藏著無數大名鼎鼎的排隊無名小攤。',
+                tip: '精選必吃店家：【百家村無名肉串】(百家村路，下午3點半出攤，裹滿甜辣醬，¥3/串)；【阿玲麵線糊】(湯頭清甜鮮美，¥15)；【利友鹽水鴨】(緊實鹹香，¥28)。',
+                vendors: ['百家村無名肉串', '阿玲麵線糊', '利友鹽水鴨']
+            },
+            {
+                id: 'datong',
+                name: '大同路 & 橫竹路百年舊騎樓',
+                category: 'food',
+                categoryLabel: '老街美食',
+                taxiTime: 22,
+                taxiFare: 25,
+                steps: 1.6,
+                foodScore: 9,
+                shopScore: 6,
+                cultureScore: 10,
+                travelScore: 7,
+                rating: 5,
+                desc: '斑駁落寞的騎樓百葉窗，滿街都是幾十年不變的純粹老閩南小吃，完全不商業化。',
+                tip: '精選必吃店家：【佳味再添】(國營老店，芋包¥4/個、肉粽¥7/個，需拿紙票換餐)；【九市牛肉】(牛肉羹¥15、沙茶牛肉拌麵¥15)；【賴厝埕扁食嫂】(手工扁食，¥12)。',
+                vendors: ['佳味再添芋包/肉粽', '九市牛肉', '賴厝埕扁食']
+            },
+            {
+                id: 'shapowei',
+                name: '沙坡尾避風塢 & 大學路文創街',
+                category: 'culture',
+                categoryLabel: '文創老街',
+                taxiTime: 22,
+                taxiFare: 26,
+                steps: 2.2,
+                foodScore: 8,
+                shopScore: 9,
+                cultureScore: 8,
+                travelScore: 7,
+                rating: 5,
+                desc: '古老避風港與現代潮流、日系雜貨鋪、獨立服飾買手店交織的網美街區。',
+                tip: '精選必吃店家：【手工芒果/芋泥冰】(¥25)；【現裹手工麻糬】。最適合邊淘雜貨、淘衣服邊吃。',
+                vendors: ['手工芋泥冰', '現裹手工麻糬']
+            },
+            {
+                id: 'smplaza',
+                name: 'SM 城市廣場 (一、二、三期)',
+                category: 'shopping',
+                categoryLabel: '潮流購物',
+                taxiTime: 3,
+                taxiFare: 10,
+                steps: 1.2,
+                foodScore: 7,
+                shopScore: 10,
+                cultureScore: 2,
+                travelScore: 9,
+                rating: 5,
+                desc: '飯店出門即達的超級巨型購物中心，三期設計感最足，品牌最新潮。',
+                tip: '精選必吃店家：【霸王茶姬】(¥16)；【喜茶】；【茉莉奶白】。暴雨天或中午暴曬的最佳吃逛備案。',
+                vendors: ['霸王茶姬', '喜茶', '茉莉奶白']
+            },
+            {
+                id: 'mixc',
+                name: '華潤萬象城 (The MixC)',
+                category: 'shopping',
+                categoryLabel: '潮流購物',
+                taxiTime: 11,
+                taxiFare: 14,
+                steps: 1.3,
+                foodScore: 8,
+                shopScore: 9,
+                cultureScore: 3,
+                travelScore: 9,
+                rating: 5,
+                desc: '廈門定位最高端的新奢旗艦商場，網紅與頂級精緻餐飲聚集地。',
+                tip: '精選必吃店家：【裕蓮茶樓】(茶香蛋塔¥12/個，酥脆排隊王)；地下美食街精緻餐飲極多。',
+                vendors: ['裕蓮茶樓茶香蛋塔', '萬象城精緻粵菜']
+            },
+            {
+                id: 'zengcuoan',
+                name: '曾厝垵歷史文創老漁村',
+                category: 'culture',
+                categoryLabel: '文創老街',
+                taxiTime: 22,
+                taxiFare: 26,
+                steps: 2.2,
+                foodScore: 8,
+                shopScore: 7,
+                cultureScore: 6,
+                travelScore: 6,
+                rating: 4,
+                desc: '海濱漁村改建的超大夜市，塞滿了特色伴手禮店和海鮮燒烤小吃。',
+                tip: '精選必吃：【蒜香烤生蠔】(¥20/半打)。主街較擁擠，建議去外圍環島路散步踩沙，進夜市買熱帶水果。',
+                vendors: ['蒜香烤生蠔', '曾厝垵芒果冰']
+            },
+            {
+                id: 'huandao',
+                name: '環島路沙灘海岸線 (避開咖啡街)',
+                category: 'culture',
+                categoryLabel: '文創老街',
+                taxiTime: 22,
+                taxiFare: 26,
+                steps: 1.5,
+                foodScore: 4,
+                shopScore: 3,
+                cultureScore: 8,
+                travelScore: 10,
+                rating: 4,
+                desc: '絕美金色海岸，純粹去椰風寨、玩月坡沙灘慢步踩沙、吹海風，極其解壓。',
+                tip: '精選體驗：【海風椰子汁】(¥15/顆)。避開所有溢價的網紅咖啡館，純粹吹海風與騎單車。',
+                vendors: ['現剖海灘原汁椰子']
+            },
+            {
+                id: 'jimei',
+                name: '集美大社老街與十里長堤',
+                category: 'experience',
+                categoryLabel: '特色體驗',
+                taxiTime: 24,
+                taxiFare: 40,
+                steps: 1.8,
+                foodScore: 8,
+                shopScore: 5,
+                cultureScore: 9,
+                travelScore: 9,
+                rating: 5,
+                desc: '島外集美百年古老紅磚大社。長堤草地上常有青年樂隊露天彈唱，海景極開闊。',
+                tip: '精選必吃店家：【聯發沙茶麵】(¥20/碗，大社學生回憶)；【大社手工大芋包】(筍肉扎實，¥5)。',
+                vendors: ['大社聯發沙茶麵', '大社手工芋包']
+            },
+            {
+                id: 'seametro',
+                name: '海上地鐵體驗 (呂厝 ➔ 集美)',
+                category: 'experience',
+                categoryLabel: '特色體驗',
+                taxiTime: 20,
+                taxiFare: 5,
+                steps: 0.8,
+                foodScore: 2,
+                shopScore: 2,
+                cultureScore: 7,
+                travelScore: 10,
+                rating: 5,
+                desc: '地鐵1號線跨海段，出隧道的瞬間兩側是無邊蔚藍，宛如《千與千尋》海上列車。',
+                tip: '從呂厝站坐到集美學村站。車程20分鐘，窗外看海視野無與倫比。推薦體驗！',
+                vendors: ['海上地鐵窗景視覺體驗']
+            },
+            {
+                id: 'biandougan',
+                name: '吳記煸豆干 (傳統閩南圓鐵板燒)',
+                category: 'food',
+                categoryLabel: '老街美食',
+                taxiTime: 10,
+                taxiFare: 12,
+                steps: 0.8,
+                foodScore: 10,
+                shopScore: 3,
+                cultureScore: 7,
+                travelScore: 6,
+                rating: 5,
+                desc: '老街裡最接地氣的吃法。圍在圓鐵板前自己煎魚粿、豆腐、五香、鮮魷魚與鮮肉。',
+                tip: '招牌必吃：【煸豆干、煎海鮮、煎五香】(人均約¥40-50)。配上當地涼茶，是最生猛的深夜宵夜。',
+                vendors: ['煸豆干與魚粿煎盤', '煸生鮮魷魚與豬肉']
+            },
+            {
+                id: 'xiandao',
+                name: '溪岸路花鳥市場老街',
+                category: 'culture',
+                categoryLabel: '文創老街',
+                taxiTime: 12,
+                taxiFare: 15,
+                steps: 1.0,
+                foodScore: 7,
+                shopScore: 7,
+                cultureScore: 9,
+                travelScore: 7,
+                rating: 5,
+                desc: '隱藏在繁華市區老別墅區裡的花市老街，塞滿了芬芳鮮花和極具年代感的復古騎樓。',
+                tip: '緊鄰百家村，適合買一小束花慢行散步拍照。氛圍寧靜溫馨，老洋房林立。',
+                vendors: ['溪岸路老別墅街景']
+            },
+            {
+                id: 'railway',
+                name: '老舊鐵路文化公園園區',
+                category: 'culture',
+                categoryLabel: '文創老街',
+                taxiTime: 18,
+                taxiFare: 22,
+                steps: 1.8,
+                foodScore: 3,
+                shopScore: 3,
+                cultureScore: 9,
+                travelScore: 8,
+                rating: 4,
+                desc: '廢棄鐵軌改造的長條石板步道。夏天兩旁三角梅（九重葛）盛開，復古悠閒。',
+                tip: '推薦傍晚散步。兩側皆是紅磚舊牆與雕塑，是老廈門人日常消遣散步的祕境。',
+                vendors: ['廢棄鐵道石板路慢步']
+            }
+        ];
+
+        let selectedIds = ['bashi', 'baijiacun', 'datong', 'smplaza', 'mixc', 'shapowei', 'zhongshan', 'jimei', 'seametro', 'biandougan'];
+        let selectedFoodMap = {}; 
+        let currentFilter = 'all';
+
+        let timeChart = null;
+        let energyChart = null;
+        let radarChart = null;
+
+        function wrapLabel(label) {
+            if (label.length <= 16) return label;
+            let words = label.split(' ');
+            let lines = [];
+            let currentLine = '';
+            for (let i = 0; i < words.length; i++) {
+                if ((currentLine + words[i]).length > 16) {
+                    if (currentLine !== '') {
+                        lines.push(currentLine.trim());
+                        currentLine = words[i] + ' ';
+                    } else {
+                        lines.push(words[i]);
+                        currentLine = '';
+                    }
+                } else {
+                    currentLine += words[i] + ' ';
+                }
+            }
+            if (currentLine.trim() !== '') {
+                lines.push(currentLine.trim());
+            }
+            return lines;
+        }
+
+        const commonTooltipConfig = {
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        title: function(tooltipItems) {
+                            const item = tooltipItems[0];
+                            let label = item.chart.data.labels[item.dataIndex];
+                            if (Array.isArray(label)) {
+                                return label.join(' ');
+                            } else {
+                                return label;
+                            }
+                        }
+                    }
+                },
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        font: { family: "'Noto Sans TC', sans-serif" }
+                    }
+                }
+            },
+            maintainAspectRatio: false
+        };
+
+        function filterCategory(cat) {
+            currentFilter = cat;
+            const tabs = ['all', 'food', 'shopping', 'culture', 'experience'];
+            tabs.forEach(t => {
+                const el = document.getElementById(`tab-${t}`);
+                if (t === cat) {
+                    el.className = "px-3 py-1 text-xs font-bold rounded-lg transition bg-white text-brand-navy shadow-sm";
+                } else {
+                    el.className = "px-3 py-1 text-xs font-bold rounded-lg transition text-gray-500 hover:text-brand-navy";
+                }
+            });
+            renderAttractionPool();
+        }
+
+        function renderAttractionPool() {
+            const container = document.getElementById('attractionPool');
+            container.innerHTML = '';
+
+            const filtered = ATTRACTION_DATABASE.filter(item => {
+                if (currentFilter === 'all') return true;
+                return item.category === currentFilter;
+            });
+
+            filtered.forEach(item => {
+                const isChecked = selectedIds.includes(item.id);
+                
+                let badgeColor = 'bg-brand-coral/10 text-brand-coral';
+                if (item.category === 'shopping') badgeColor = 'bg-brand-teal/10 text-brand-teal';
+                if (item.category === 'culture') badgeColor = 'bg-yellow-500/10 text-yellow-600';
+                if (item.category === 'experience') badgeColor = 'bg-brand-navy/10 text-brand-navy';
+
+                const stars = '⭐'.repeat(item.rating);
+
+                const div = document.createElement('div');
+                div.className = `p-4 rounded-xl border transition duration-200 cursor-pointer ${
+                    isChecked ? 'border-brand-teal bg-brand-teal/5 shadow-md' : 'border-gray-200 bg-white hover:border-brand-teal/50'
+                }`;
+                
+                let foodSubListHTML = '';
+                if (isChecked && item.vendors && item.vendors.length > 0) {
+                    foodSubListHTML += `
+                        <div class="mt-3 pt-3 border-t border-brand-teal/20 space-y-2">
+                            <span class="text-[11px] font-black text-brand-coral block mb-1">🍢 規劃前往的美食小吃與店家 (可點選)：</span>
+                            <div class="grid grid-cols-2 sm:grid-cols-3 gap-1.5">
+                    `;
+                    item.vendors.forEach(v => {
+                        const foodKey = `${item.id}-${v}`;
+                        const isFoodSelected = selectedFoodMap[foodKey] !== false; 
+                        foodSubListHTML += `
+                            <label onclick="event.stopPropagation();" class="flex items-center gap-1.5 bg-white px-2 py-1 rounded border text-[11px] font-bold cursor-pointer transition ${isFoodSelected ? 'border-brand-coral text-brand-coral bg-brand-coral/5' : 'border-gray-200 text-gray-400'}">
+                                <input type="checkbox" ${isFoodSelected ? 'checked' : ''} onchange="toggleFood('${item.id}', '${v}')" class="w-3.5 h-3.5 text-brand-coral border-gray-300 rounded focus:ring-brand-coral">
+                                <span class="truncate">${v}</span>
+                            </label>
+                        `;
+                    });
+                    foodSubListHTML += `
+                            </div>
+                        </div>
+                    `;
+                }
+
+                div.innerHTML = `
+                    <div onclick="toggleSelect('${item.id}')" class="flex items-start gap-3">
+                        <input type="checkbox" ${isChecked ? 'checked' : ''} class="mt-1 w-4 h-4 text-brand-teal focus:ring-brand-teal border-gray-300 rounded pointer-events-none">
+                        <div class="flex-grow">
+                            <div class="flex flex-wrap items-center gap-2 mb-1">
+                                <h4 class="font-bold text-brand-navy text-sm md:text-base">${item.name}</h4>
+                                <span class="text-[10px] font-black px-2 py-0.5 rounded-full ${badgeColor}">${item.categoryLabel}</span>
+                                <span class="text-xs">${stars}</span>
+                            </div>
+                            <p class="text-xs text-gray-500 mb-2 leading-relaxed">${item.desc}</p>
+                            <div class="flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px] font-bold text-gray-400">
+                                <span class="text-brand-coral">🚕 計程車約 ${item.taxiTime} 分鐘 (¥${item.taxiFare})</span>
+                                <span class="text-brand-teal">🚶 預期耗體力：${item.steps} 萬步</span>
+                            </div>
+                            <div class="mt-2 text-[11px] leading-relaxed text-brand-navy bg-brand-yellow/10 p-2.5 rounded-lg border-l-2 border-brand-yellow">
+                                💡 <b>在地吃逛指南：</b>${item.tip}
+                            </div>
+                        </div>
+                    </div>
+                    ${foodSubListHTML}
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function toggleSelect(id) {
+            const idx = selectedIds.indexOf(id);
+            if (idx > -1) {
+                selectedIds.splice(idx, 1);
+            } else {
+                selectedIds.push(id);
+            }
+            renderAttractionPool();
+            updateCalculations();
+        }
+
+        function toggleFood(attrId, vendorName) {
+            const foodKey = `${attrId}-${vendorName}`;
+            if (selectedFoodMap[foodKey] === false) {
+                selectedFoodMap[foodKey] = true;
+            } else {
+                selectedFoodMap[foodKey] = false;
+            }
+            renderAttractionPool();
+            updateCalculations();
+        }
+
+        function quickLoadPreset(type) {
+            if (type === 'classic') {
+                selectedIds = ['bashi', 'baijiacun', 'datong', 'smplaza', 'mixc', 'shapowei', 'zhongshan', 'jimei', 'seametro', 'biandougan'];
+            } else if (type === 'shopping') {
+                selectedIds = ['smplaza', 'mixc', 'zhongshan', 'shapowei', 'bashi', 'biandougan'];
+            }
+            selectedFoodMap = {}; 
+            filterCategory('all');
+            updateCalculations();
+        }
+
+        function resetAll() {
+            selectedIds = [];
+            selectedFoodMap = {};
+            filterCategory('all');
+            updateCalculations();
+        }
+
+        function updateCalculations() {
+            const activeItems = ATTRACTION_DATABASE.filter(item => selectedIds.includes(item.id));
+
+            document.getElementById('selectedCountBadge').innerText = `已選 ${activeItems.length} 個`;
+
+            let totalTaxiCost = 0;
+            let totalTaxiTime = 0;
+            let totalSteps = 0;
+            let foodCount = 0;
+
+            activeItems.forEach(item => {
+                totalTaxiCost += item.taxiFare;
+                totalTaxiTime += item.taxiTime;
+                totalSteps += item.steps;
+                
+                if (item.vendors && item.vendors.length > 0) {
+                    item.vendors.forEach(v => {
+                        const foodKey = `${item.id}-${v}`;
+                        if (selectedFoodMap[foodKey] !== false) {
+                            foodCount++;
+                        }
+                    });
+                } else {
+                    if (item.category === 'food') {
+                        foodCount++;
+                    }
+                }
+            });
+
+            document.getElementById('kpiTaxiCost').innerText = `¥${totalTaxiCost}`;
+            document.getElementById('kpiTaxiTime').innerText = `${totalTaxiTime} 分鐘`;
+            document.getElementById('kpiSteps').innerText = `${totalSteps.toFixed(1)} 萬步`;
+            document.getElementById('kpiFoodCount').innerText = `${foodCount} 個`;
+
+            const summaryList = document.getElementById('selectedSummaryList');
+            summaryList.innerHTML = '';
+            if (activeItems.length === 0) {
+                summaryList.innerHTML = '<p class="text-gray-400 text-center py-6">尚未選擇任何景點，請在左側點選！</p>';
+            } else {
+                activeItems.forEach(item => {
+                    const el = document.createElement('div');
+                    el.className = 'flex justify-between items-center bg-brand-light p-2 rounded-lg border border-brand-teal/10';
+                    el.innerHTML = `
+                        <span class="font-bold text-xs text-brand-navy">${item.name}</span>
+                        <div class="flex items-center gap-2">
+                            <span class="text-[10px] text-brand-coral font-bold">¥${item.taxiFare}</span>
+                            <button onclick="toggleSelect('${item.id}')" class="text-gray-400 hover:text-brand-coral text-xs font-bold px-1">✕</button>
+                        </div>
+                    `;
+                    summaryList.appendChild(el);
+                });
+            }
+
+            let adviceText = "";
+            if (activeItems.length === 0) {
+                adviceText = "請勾選左側老街景點，我們將立即為您產生客製化的交通與體力建議！";
+            } else {
+                let adviceParts = [];
+                if (totalTaxiCost > 150) {
+                    adviceParts.push("⚠️ <b>車資提醒：</b>您的預估總計程車資偏高 (¥" + totalTaxiCost + ")，主要是包含了島外景點。建議您可以與旅伴平分車資，或者部分跨海路段選擇體驗「海上地鐵」，既能省錢又能看海景！");
+                } else {
+                    adviceParts.push("✅ <b>車資點評：</b>總車資非常實惠合理！每人分攤下來費用極低，直接叫車點對點移動是省時、保存逛老街體力的最優解。");
+                }
+
+                if (totalSteps > 6) {
+                    adviceParts.push("🏃 <b>體力提醒：</b>總預估步數高達 " + totalSteps.toFixed(1) + " 萬步。這是一次高強度的老街吃逛行程！強烈建議每天走完行程後，去老街（例如中山路周邊）安排一次閩南足浴按摩，放鬆雙腳。");
+                } else {
+                    adviceParts.push("🚲 <b>體力點評：</b>行程強度適中，有充分的時間享受老街與美食，不會過度勞累。");
+                }
+
+                if (foodCount >= 10) {
+                    adviceParts.push("🍲 <b>風味偏好：</b>規劃了高達 " + foodCount + " 個老街美食踩點！這是一份以「吃」為絕對核心的極致饕客老街行程！八市、中山路巷弄、大同路與百家村能滿足您對古早味的所有幻想。");
+                }
+
+                adviceText = adviceParts.join("<br><br>");
+            }
+            document.getElementById('plannerAdvice').innerHTML = adviceText;
+
+            updateCharts(activeItems, foodCount);
+        }
+
+        function updateCharts(activeItems, foodCount) {
+            let foodAgg = 0, shopAgg = 0, cultureAgg = 0, travelAgg = 0;
+            
+            if (activeItems.length === 0) {
+                foodAgg = 25; shopAgg = 25; cultureAgg = 25; travelAgg = 25;
+            } else {
+                activeItems.forEach(item => {
+                    foodAgg += item.foodScore;
+                    shopAgg += item.shopScore;
+                    cultureAgg += item.cultureScore;
+                    travelAgg += item.travelScore;
+                });
+                const total = foodAgg + shopAgg + cultureAgg + travelAgg;
+                foodAgg = Math.round((foodAgg / total) * 100);
+                shopAgg = Math.round((shopAgg / total) * 100);
+                cultureAgg = Math.round((cultureAgg / total) * 100);
+                travelAgg = 100 - (foodAgg + shopAgg + cultureAgg);
+            }
+
+            if (timeChart) {
+                timeChart.data.datasets[0].data = [foodAgg, shopAgg, cultureAgg, travelAgg];
+                timeChart.update();
+            }
+
+            let daysSteps = [1.2, 2.5, 2.2, 1.8, 0.5];
+            if (activeItems.length > 0) {
+                let stepSum = activeItems.reduce((acc, item) => acc + item.steps, 0);
+                daysSteps = [
+                    Math.max(0.5, stepSum * 0.15),
+                    Math.max(1.0, stepSum * 0.35),
+                    Math.max(1.0, stepSum * 0.30),
+                    Math.max(0.8, stepSum * 0.22),
+                    0.5
+                ];
+            } else {
+                daysSteps = [0, 0, 0, 0, 0];
+            }
+
+            if (energyChart) {
+                energyChart.data.datasets[0].data = daysSteps.map(v => parseFloat(v.toFixed(1)));
+                energyChart.update();
+            }
+
+            let f1 = 0, f2 = 0, f3 = 0, f4 = 0, f5 = 0;
+            if (activeItems.length > 0) {
+                activeItems.forEach(item => {
+                    if (item.category === 'food') {
+                        f1 += 2; f4 += 1.5;
+                    }
+                    if (item.id === 'bashi' || item.id === 'biandougan') f2 += 3.5;
+                    if (item.category === 'shopping') f3 += 2;
+                    if (item.id === 'jimei' || item.id === 'seametro') f5 += 2.5;
+                });
+                
+                f1 = Math.min(10, Math.max(1, f1 + (foodCount > 10 ? 3 : 1)));
+                f2 = Math.min(10, Math.max(1, f2));
+                f3 = Math.min(10, Math.max(1, f3));
+                f4 = Math.min(10, Math.max(1, f4 + (foodCount > 5 ? 2 : 0)));
+                f5 = Math.min(10, Math.max(1, f5));
+            }
+
+            if (radarChart) {
+                radarChart.data.datasets[0].data = [f1, f2, f3, f4, f5];
+                radarChart.update();
+            }
+        }
+
+        window.onload = function() {
+            const ctxAllocation = document.getElementById('timeAllocationChart').getContext('2d');
+            const labelsAllocationRaw = ["老街美食與傳統小吃", "潮流商圈逛街與購物", "歷史老街巡禮與探索", "舒適計程車移動與休息"];
+            const labelsAllocationWrapped = labelsAllocationRaw.map(wrapLabel);
+            
+            timeChart = new Chart(ctxAllocation, {
+                type: 'doughnut',
+                data: {
+                    labels: labelsAllocationWrapped,
+                    datasets: [{
+                        data: [45, 30, 15, 10],
+                        backgroundColor: ['#FF6B6B', '#4ECDC4', '#FFE66D', '#1A535C'],
+                        borderWidth: 0,
+                        hoverOffset: 10
+                    }]
+                },
+                options: {
+                    ...commonTooltipConfig,
+                    cutout: '65%'
+                }
+            });
+
+            const ctxEnergy = document.getElementById('dailyEnergyChart').getContext('2d');
+            const labelsEnergyRaw = ["Day 1 抵達與初探商圈", "Day 2 萬象城沙坡尾雙鐵人", "Day 3 八市與百家村老街", "Day 4 學村大社與大同路騎樓", "Day 5 滿載歸途前往機場"];
+            const labelsEnergyWrapped = labelsEnergyRaw.map(wrapLabel);
+
+            energyChart = new Chart(ctxEnergy, {
+                type: 'bar',
+                data: {
+                    labels: labelsEnergyWrapped,
+                    datasets: [{
+                        label: '預估步行指數 (萬步)',
+                        data: [1.2, 2.5, 2.2, 1.8, 0.5],
+                        backgroundColor: '#4ECDC4',
+                        borderRadius: 8
+                    }]
+                },
+                options: {
+                    ...commonTooltipConfig,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: { display: false }
+                        },
+                        x: {
+                            grid: { display: false },
+                            ticks: { font: { family: "'Noto Sans TC', sans-serif" } }
+                        }
+                    }
+                }
+            });
+
+            const ctxRadar = document.getElementById('foodRadarChart').getContext('2d');
+            const labelsRadarRaw = ["傳統市井古早味", "生猛海鮮大排檔", "超人氣網紅手搖飲", "老街古早味點心", "港式經典與大餐"];
+            const labelsRadarWrapped = labelsRadarRaw.map(wrapLabel);
+
+            radarChart = new Chart(ctxRadar, {
+                type: 'radar',
+                data: {
+                    labels: labelsRadarWrapped,
+                    datasets: [{
+                        label: '老街美食涵蓋度 (1-10分)',
+                        data: [10, 9, 7, 9, 7],
+                        fill: true,
+                        backgroundColor: 'rgba(255, 107, 107, 0.2)',
+                        borderColor: '#FF6B6B',
+                        pointBackgroundColor: '#FF6B6B',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: '#FF6B6B'
+                    }]
+                },
+                options: {
+                    ...commonTooltipConfig,
+                    scales: {
+                        r: {
+                            angleLines: { color: 'rgba(26, 83, 92, 0.1)' },
+                            grid: { color: 'rgba(26, 83, 92, 0.1)' },
+                            pointLabels: {
+                                font: { family: "'Noto Sans TC', sans-serif", size: 14 },
+                                color: '#1A535C'
+                              },
+                            ticks: { display: false, min: 0, max: 10 }
+                        }
+                    }
+                }
+            });
+
+            renderAttractionPool();
+            updateCalculations();
+        };
+    </script>
+</body>
+</html>

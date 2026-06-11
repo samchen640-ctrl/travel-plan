@@ -2,7 +2,7 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>廈門 5天4夜 自由行數據與老街備案解析</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -31,6 +31,7 @@
         body {
             background-color: #F7FFF7;
             color: #1A535C;
+            -webkit-tap-highlight-color: transparent;
         }
         .chart-container {
             position: relative;
@@ -38,8 +39,12 @@
             max-width: 600px;
             margin-left: auto;
             margin-right: auto;
-            height: 320px;
-            max-height: 380px;
+            height: 280px;
+        }
+        @media (min-width: 640px) {
+            .chart-container {
+                height: 320px;
+            }
         }
         @media (min-width: 768px) {
             .chart-container {
@@ -71,108 +76,114 @@
             z-index: 0;
         }
         .custom-scrollbar::-webkit-scrollbar {
-            width: 6px;
+            width: 4px;
+            height: 4px;
         }
         .custom-scrollbar::-webkit-scrollbar-track {
             background: rgba(26, 83, 92, 0.05);
         }
         .custom-scrollbar::-webkit-scrollbar-thumb {
             background: rgba(78, 205, 196, 0.5);
-            border-radius: 3px;
+            border-radius: 2px;
+        }
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
         }
     </style>
 </head>
-<body class="antialiased">
+<body class="antialiased overflow-x-hidden pb-24 lg:pb-12">
 
-    <!-- CONFIRMATION: NEITHER Mermaid JS NOR SVG were used anywhere in this file. All icons use standard text emojis. No comments were outputted in the source code to ensure pure code presentation. -->
-
-    <div class="max-w-6xl mx-auto px-4 py-12">
+    <div class="max-w-6xl mx-auto px-4 py-8 md:py-12">
         
-        <header class="text-center mb-12">
-            <h1 class="text-5xl md:text-6xl font-black text-brand-navy mb-4 tracking-tight">廈門自選老街行程 <span class="text-brand-coral">即時數據規劃盤</span></h1>
-            <p class="text-xl text-brand-teal font-bold mb-6">自訂吃逛景點 ➔ 即時動態連動計費（已補齊每日來回車資）</p>
-            <p class="max-w-2xl mx-auto text-gray-600 leading-relaxed text-sm md:text-base">
-                本網頁專為<b>全計程車移動</b>、喜愛<b>老街美食與逛街</b>的旅客設計。下方內建了廈門最精華的歷史街區、中山路美食與購物地圖。我們已<b>補齊每日返回飯店的車資與時間估算</b>，讓您的預算規劃完美無缺！
+        <header class="text-center mb-8 md:mb-12">
+            <h1 class="text-3xl sm:text-4xl md:text-6xl font-black text-brand-navy mb-3 tracking-tight">廈門自選老街行程 <span class="text-brand-coral">即時數據規劃盤</span></h1>
+            <p class="text-base sm:text-lg md:text-xl font-bold text-brand-teal mb-4 sm:mb-6">自訂吃逛景點 ➔ 即時動態連動計費（極致支援行動版）</p>
+            <p class="max-w-2xl mx-auto text-gray-600 leading-relaxed text-xs sm:text-sm md:text-base">
+                本網頁專為全計程車移動、喜愛老街美食與逛街的旅客設計。下方內建了廈門最精華的歷史街區、中山路美食與購物地圖。我們已補齊每日返回飯店的車資與時間估算，並為您的手機瀏覽做出了完美的觸控體驗優化！
             </p>
         </header>
 
-        <section class="mb-12">
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div class="glass-card p-5 text-center transform hover:-translate-y-1 transition duration-200">
-                    <div class="text-3xl mb-1">🚗</div>
-                    <div class="text-3xl font-black text-brand-coral mb-1" id="kpiTaxiCost">¥0</div>
-                    <div class="text-xs font-bold text-gray-500 uppercase tracking-wider">預估總計程車資(含返程)</div>
+        <section class="mb-8 md:mb-12">
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+                <div class="glass-card p-4 sm:p-5 text-center transition duration-200 active:scale-95">
+                    <div class="text-2xl sm:text-3xl mb-1">🚗</div>
+                    <div class="text-xl sm:text-3xl font-black text-brand-coral mb-0.5" id="kpiTaxiCost">¥0</div>
+                    <div class="text-[10px] sm:text-xs font-bold text-gray-500 uppercase tracking-wider">預估總計程車資(含返程)</div>
                 </div>
-                <div class="glass-card p-5 text-center transform hover:-translate-y-1 transition duration-200">
-                    <div class="text-3xl mb-1">⏳</div>
-                    <div class="text-3xl font-black text-brand-teal mb-1" id="kpiTaxiTime">0 分鐘</div>
-                    <div class="text-xs font-bold text-gray-500 uppercase tracking-wider">預估總交通耗時</div>
+                <div class="glass-card p-4 sm:p-5 text-center transition duration-200 active:scale-95">
+                    <div class="text-2xl sm:text-3xl mb-1">⏳</div>
+                    <div class="text-xl sm:text-3xl font-black text-brand-teal mb-0.5" id="kpiTaxiTime">0 分鐘</div>
+                    <div class="text-[10px] sm:text-xs font-bold text-gray-500 uppercase tracking-wider">預估總交通耗時</div>
                 </div>
-                <div class="glass-card p-5 text-center transform hover:-translate-y-1 transition duration-200">
-                    <div class="text-3xl mb-1">👣</div>
-                    <div class="text-3xl font-black text-brand-yellow mb-1 text-yellow-500" id="kpiSteps">0 萬步</div>
-                    <div class="text-xs font-bold text-gray-500 uppercase tracking-wider">預計總步數消耗</div>
+                <div class="glass-card p-4 sm:p-5 text-center transition duration-200 active:scale-95">
+                    <div class="text-2xl sm:text-3xl mb-1">👣</div>
+                    <div class="text-xl sm:text-3xl font-black text-brand-yellow mb-0.5 text-yellow-500" id="kpiSteps">0 萬步</div>
+                    <div class="text-[10px] sm:text-xs font-bold text-gray-500 uppercase tracking-wider">預計總步數消耗</div>
                 </div>
-                <div class="glass-card p-5 text-center transform hover:-translate-y-1 transition duration-200">
-                    <div class="text-3xl mb-1">🍲</div>
-                    <div class="text-3xl font-black text-brand-navy mb-1" id="kpiFoodCount">0 個</div>
-                    <div class="text-xs font-bold text-gray-500 uppercase tracking-wider">規劃美食打卡點</div>
+                <div class="glass-card p-4 sm:p-5 text-center transition duration-200 active:scale-95">
+                    <div class="text-2xl sm:text-3xl mb-1">🍲</div>
+                    <div class="text-xl sm:text-3xl font-black text-brand-navy mb-0.5" id="kpiFoodCount">0 個</div>
+                    <div class="text-[10px] sm:text-xs font-bold text-gray-500 uppercase tracking-wider">規劃美食打卡點</div>
                 </div>
             </div>
         </section>
 
-        <section class="mb-12">
-            <h2 class="text-3xl font-bold text-brand-navy border-b-4 border-brand-yellow inline-block mb-6 pb-2">📅 經典 5天4夜 每日精華老街美食行程表 (含回飯店車資)</h2>
-            <p class="text-gray-600 mb-6 text-sm md:text-base leading-relaxed">
-                這是為您客製化的一套<b>「老街美食與瘋狂逛街」</b>經典黃金路線。我們特別將<b>每日晚間返回亞朵酒店的計程車車程與預估車資</b>（Day 1 為步行除外）以高亮標註，確保預算毫無遺漏。
+        <section class="mb-8 md:mb-12">
+            <h2 class="text-2xl sm:text-3xl font-bold text-brand-navy border-b-4 border-brand-yellow inline-block mb-4 sm:mb-6 pb-2">📅 5天4夜 每日精華美食行程表 (含回飯店車資)</h2>
+            <p class="text-gray-600 mb-6 text-xs sm:text-sm leading-relaxed">
+                這是最順路的黃金吃逛動線。第一天進酒店放行李後，直接步行前往旁邊的江頭市場品嚐神級大腸包小腸，隨後接續逛 SM 城市廣場，實現第一天零多餘車資的完美體驗！
             </p>
 
             <div class="grid grid-cols-1 lg:grid-cols-5 gap-4">
                 
-                <div class="glass-card p-5 space-y-3 border-t-4 border-brand-coral">
+                <div class="glass-card p-4 sm:p-5 space-y-3 border-t-4 border-brand-coral">
                     <div class="flex justify-between items-center">
-                        <span class="font-black text-brand-coral text-lg">Day 1</span>
-                        <span class="text-xs font-bold bg-brand-coral/10 text-brand-coral px-2 py-0.5 rounded-full">抵達與商圈</span>
+                        <span class="font-black text-brand-coral text-base sm:text-lg">Day 1</span>
+                        <span class="text-[10px] font-bold bg-brand-coral/10 text-brand-coral px-2 py-0.5 rounded-full">抵達與江頭</span>
                     </div>
                     <p class="text-xs text-gray-500 leading-relaxed">
-                        <b>12:50</b> 抵達機場 ➔ 🚕 12分鐘 (¥18) ➔ 亞朵酒店進房 ➔ <b>15:00</b> 🛍️ <b>SM城市廣場</b> (大牌茶飲、國潮掃貨) ➔ <b>20:30</b> 🍢 <b>台灣街宵夜</b> ➔ 🚶 步行回酒店 (¥0)
+                        <b>12:50</b> 抵達機場 ➔ 🚕 12分鐘 (¥18) ➔ 亞朵酒店進房 ➔ <b>15:00</b> 🏮 <b>江頭市場</b> (步行5-8分鐘即達，吃大腸包小腸、現切芒果) ➔ <b>16:30</b> 🛍️ <b>SM城市廣場</b> (步行前往，喝茶飲逛三期) ➔ <b>20:30</b> 🍢 <b>台灣街宵夜</b> ➔ 🚶 步行回酒店 (¥0)
                     </p>
                 </div>
 
-                <div class="glass-card p-5 space-y-3 border-t-4 border-brand-teal">
+                <div class="glass-card p-4 sm:p-5 space-y-3 border-t-4 border-brand-teal">
                     <div class="flex justify-between items-center">
-                        <span class="font-black text-brand-teal text-lg">Day 2</span>
-                        <span class="text-xs font-bold bg-brand-teal/10 text-brand-teal px-2 py-0.5 rounded-full">中山路老街</span>
+                        <span class="font-black text-brand-teal text-base sm:text-lg">Day 2</span>
+                        <span class="text-[10px] font-bold bg-brand-teal/10 text-brand-teal px-2 py-0.5 rounded-full">中山路老街</span>
                     </div>
                     <p class="text-xs text-gray-500 leading-relaxed">
-                        <b>10:30</b> 🏬 <b>萬象城</b> (買裕蓮茶樓蛋塔) ➔ 🚕 15分鐘 (¥22) ➔ <b>14:30</b> 🎨 <b>沙坡尾 & 大學路</b> ➔ 🚕 8分鐘 (¥12) ➔ <b>19:00</b> 🏮 <b>中山路老街</b> (吃海蠣煎、沙茶麵) ➔ <b class="text-brand-coral">🚕 22分鐘 (¥25) 返回亞朵酒店</b>
+                        <b>10:30</b> 🏬 <b>萬象城</b> (買蛋塔) ➔ 🚕 15分鐘 (¥22) ➔ <b>14:30</b> 🎨 <b>沙坡尾 & 大學路</b> ➔ 🚕 8分鐘 (¥12) ➔ <b>19:00</b> 🏮 <b>中山路老街</b> (吃海蠣煎、思西雞蛋漢堡) ➔ <span class="text-brand-coral font-bold">🚕 22分鐘 (¥25) 返回亞朵酒店</span>
                     </p>
                 </div>
 
-                <div class="glass-card p-5 space-y-3 border-t-4 border-yellow-500">
+                <div class="glass-card p-4 sm:p-5 space-y-3 border-t-4 border-yellow-500">
                     <div class="flex justify-between items-center">
-                        <span class="font-black text-yellow-600 text-lg">Day 3</span>
-                        <span class="text-xs font-bold bg-yellow-500/10 text-yellow-600 px-2 py-0.5 rounded-full">雙老街美食</span>
+                        <span class="font-black text-yellow-600 text-base sm:text-lg">Day 3</span>
+                        <span class="text-[10px] font-bold bg-yellow-500/10 text-yellow-600 px-2 py-0.5 rounded-full">雙老街美食</span>
                     </div>
                     <p class="text-xs text-gray-500 leading-relaxed">
-                        <b>10:00</b> 🦀 <b>八市海鮮</b> ➔ 🚕 18分鐘 (¥24) ➔ <b>13:30</b> 🚲 <b>曾厝垵 & 環島路</b> ➔ 🚕 12分鐘 (¥16) ➔ <b>16:30</b> 🏰 <b>百家村</b> (排無名肉串) ➔ 🚕 10分鐘 (¥12) ➔ <b>19:00</b> 🥘 <b>蓮花公園煎蟹</b> ➔ <b class="text-brand-coral">🚕 8分鐘 (¥12) 返回亞朵酒店</b>
+                        <b>10:00</b> 🦀 <b>八市海鮮</b> ➔ 🚕 18分鐘 (¥24) ➔ <b>13:30</b> 🚲 <b>曾厝垵 & 環島路</b> ➔ 🚕 12分鐘 (¥16) ➔ <b>16:30</b> 🏰 <b>百家村</b> (排無名肉串) ➔ 🚕 10分鐘 (¥12) ➔ <b>19:00</b> 🥘 <b>蓮花公園煎蟹</b> ➔ <span class="text-brand-coral font-bold">🚕 8分鐘 (¥12) 返回亞朵酒店</span>
                     </p>
                 </div>
 
-                <div class="glass-card p-5 space-y-3 border-t-4 border-brand-navy">
+                <div class="glass-card p-4 sm:p-5 space-y-3 border-t-4 border-brand-navy">
                     <div class="flex justify-between items-center">
-                        <span class="font-black text-brand-navy text-lg">Day 4</span>
-                        <span class="text-xs font-bold bg-brand-navy/10 text-brand-navy px-2 py-0.5 rounded-full">大同路騎樓</span>
+                        <span class="font-black text-brand-navy text-base sm:text-lg">Day 4</span>
+                        <span class="text-[10px] font-bold bg-brand-navy/10 text-brand-navy px-2 py-0.5 rounded-full">大同路騎樓</span>
                     </div>
                     <p class="text-xs text-gray-500 leading-relaxed">
-                        <b>10:30</b> 🚇 <b>海上地鐵</b> ➔ <b>集美大社</b> ➔ 🚕 22分鐘 (¥40) ➔ <b>14:30</b> ⛩️ <b>大同路騎樓</b> ➔ 🚕 12分鐘 (¥15) ➔ <b>18:30</b> 🥟 <b>潮福城港點大餐</b> ➔ <b class="text-brand-coral">🚕 10分鐘 (¥12) 返回亞朵酒店</b>
+                        <b>10:30</b> 🚇 <b>海上地鐵</b> ➔ <b>集美大社</b> ➔ 🚕 22分鐘 (¥40) ➔ <b>14:30</b> ⛩️ <b>大同路騎樓</b> ➔ 🚕 12分鐘 (¥15) ➔ <b>18:30</b> 🥟 <b>潮福城港點大餐</b> ➔ <span class="text-brand-coral font-bold">🚕 10分鐘 (¥12) 返回亞朵酒店</span>
                     </p>
                 </div>
 
-                <div class="glass-card p-5 space-y-3 border-t-4 border-gray-400">
+                <div class="glass-card p-4 sm:p-5 space-y-3 border-t-4 border-gray-400">
                     <div class="flex justify-between items-center">
-                        <span class="font-black text-gray-500 text-lg">Day 5</span>
-                        <span class="text-xs font-bold bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full">滿載歸途</span>
+                        <span class="font-black text-gray-500 text-base sm:text-lg">Day 5</span>
+                        <span class="text-[10px] font-bold bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full">滿載歸途</span>
                     </div>
                     <p class="text-xs text-gray-500 leading-relaxed">
                         <b>06:10</b> 退房 ➔ 🚕 10分鐘 (¥15) 直達高崎機場 T3 ➔ 搭乘 <b>08:20</b> 航班返回台北。
@@ -182,47 +193,47 @@
             </div>
         </section>
 
-        <section class="mb-12 bg-white rounded-2xl shadow-xl border border-brand-teal/20 p-6">
+        <section class="mb-8 md:mb-12 bg-white rounded-2xl shadow-xl border border-brand-teal/20 p-4 sm:p-6">
             <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 mb-6 pb-4 border-b">
                 <div>
-                    <h2 class="text-2xl font-black text-brand-navy">🧭 智慧行程客製與計算器</h2>
-                    <p class="text-sm text-gray-500">點擊下方分類勾選景點，更可以展開<b>「隱藏美食店家」</b>一併加入您的吃貨計劃！</p>
+                    <h2 class="text-xl sm:text-2xl font-black text-brand-navy">🧭 智慧行程客製與計算器</h2>
+                    <p class="text-xs sm:text-sm text-gray-500">點擊標籤切換分類，勾選景點可展開隱藏美食小吃店家！</p>
                 </div>
-                <div class="flex flex-wrap gap-2">
-                    <button onclick="quickLoadPreset('classic')" class="px-3 py-1.5 bg-brand-coral text-white text-xs font-bold rounded-lg hover:bg-brand-coral/90 transition">載入經典老街方案</button>
-                    <button onclick="quickLoadPreset('shopping')" class="px-3 py-1.5 bg-brand-teal text-white text-xs font-bold rounded-lg hover:bg-brand-teal/90 transition">載入購物狂方案</button>
-                    <button onclick="resetAll()" class="px-3 py-1.5 bg-gray-400 text-white text-xs font-bold rounded-lg hover:bg-gray-500 transition">清空重選</button>
+                <div class="flex flex-wrap gap-2 w-full lg:w-auto">
+                    <button onclick="quickLoadPreset('classic')" class="flex-1 lg:flex-none text-center px-3 py-2 bg-brand-coral text-white text-xs font-bold rounded-lg hover:bg-brand-coral/90 active:scale-95 transition">載入經典老街</button>
+                    <button onclick="quickLoadPreset('shopping')" class="flex-1 lg:flex-none text-center px-3 py-2 bg-brand-teal text-white text-xs font-bold rounded-lg hover:bg-brand-teal/90 active:scale-95 transition">載入購物狂</button>
+                    <button onclick="resetAll()" class="flex-1 lg:flex-none text-center px-3 py-2 bg-gray-400 text-white text-xs font-bold rounded-lg hover:bg-gray-500 active:scale-95 transition">清空重選</button>
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8">
                 
                 <div class="lg:col-span-7 space-y-6">
-                    <div class="flex flex-wrap gap-1.5 bg-gray-100 p-1 rounded-xl w-fit" id="categoryTabs">
-                        <button onclick="filterCategory('all')" id="tab-all" class="px-3 py-1 text-xs font-bold rounded-lg transition bg-white text-brand-navy shadow-sm">🔥 全部景點</button>
-                        <button onclick="filterCategory('food')" id="tab-food" class="px-3 py-1 text-xs font-bold rounded-lg transition text-gray-500 hover:text-brand-navy">🏮 老街美食</button>
-                        <button onclick="filterCategory('shopping')" id="tab-shopping" class="px-3 py-1 text-xs font-bold rounded-lg transition text-gray-500 hover:text-brand-navy">🛍️ 潮流購物</button>
-                        <button onclick="filterCategory('culture')" id="tab-culture" class="px-3 py-1 text-xs font-bold rounded-lg transition text-gray-500 hover:text-brand-navy">🚶 文創老街</button>
-                        <button onclick="filterCategory('experience')" id="tab-experience" class="px-3 py-1 text-xs font-bold rounded-lg transition text-gray-500 hover:text-brand-navy">🚇 特色體驗</button>
+                    <div class="flex flex-nowrap overflow-x-auto gap-1.5 bg-gray-100 p-1.5 rounded-xl no-scrollbar touch-pan-x" id="categoryTabs">
+                        <button onclick="filterCategory('all')" id="tab-all" class="flex-none px-3.5 py-2 text-xs font-bold rounded-lg transition bg-white text-brand-navy shadow-sm">🔥 全部景點</button>
+                        <button onclick="filterCategory('food')" id="tab-food" class="flex-none px-3.5 py-2 text-xs font-bold rounded-lg transition text-gray-500 hover:text-brand-navy">🏮 老街美食</button>
+                        <button onclick="filterCategory('shopping')" id="tab-shopping" class="flex-none px-3.5 py-2 text-xs font-bold rounded-lg transition text-gray-500 hover:text-brand-navy">🛍️ 潮流購物</button>
+                        <button onclick="filterCategory('culture')" id="tab-culture" class="flex-none px-3.5 py-2 text-xs font-bold rounded-lg transition text-gray-500 hover:text-brand-navy">🚶 文創老街</button>
+                        <button onclick="filterCategory('experience')" id="tab-experience" class="flex-none px-3.5 py-2 text-xs font-bold rounded-lg transition text-gray-500 hover:text-brand-navy">🚇 特色體驗</button>
                     </div>
 
-                    <div id="attractionPool" class="space-y-4 max-h-[600px] overflow-y-auto pr-2 custom-scrollbar"></div>
+                    <div id="attractionPool" class="space-y-4 max-h-[500px] lg:max-h-[600px] overflow-y-auto pr-1 sm:pr-2 custom-scrollbar"></div>
                 </div>
 
-                <div class="lg:col-span-5">
-                    <div class="glass-card p-5 lg:sticky lg:top-6 space-y-5">
-                        <h3 class="text-lg font-bold text-brand-navy border-b pb-2 flex justify-between items-center">
+                <div class="lg:col-span-5" id="selectedSummaryCard">
+                    <div class="glass-card p-4 sm:p-5 lg:sticky lg:top-6 space-y-5">
+                        <h3 class="text-base sm:text-lg font-bold text-brand-navy border-b pb-2 flex justify-between items-center">
                             <span>📝 已選清單與計費細目</span>
                             <span class="text-xs bg-brand-coral/10 text-brand-coral px-2.5 py-1 rounded-full font-bold" id="selectedCountBadge">已選 0 個</span>
                         </h3>
                         
-                        <div id="selectedSummaryList" class="space-y-2.5 max-h-[250px] overflow-y-auto pr-1 custom-scrollbar text-sm">
+                        <div id="selectedSummaryList" class="space-y-2.5 max-h-[220px] lg:max-h-[250px] overflow-y-auto pr-1 custom-scrollbar text-xs sm:text-sm">
                             <p class="text-gray-400 text-center py-6">尚未選擇任何景點，請在左側點選！</p>
                         </div>
 
                         <div class="border-t pt-4 space-y-3">
-                            <h4 class="text-sm font-bold text-brand-navy">💡 達人即時計程車行程點評：</h4>
-                            <div id="plannerAdvice" class="p-4 rounded-xl text-xs font-medium leading-relaxed bg-brand-light border-l-4 border-brand-teal text-brand-navy">
+                            <h4 class="text-xs sm:text-sm font-bold text-brand-navy">💡 達人即時計程車行程點評：</h4>
+                            <div id="plannerAdvice" class="p-3 sm:p-4 rounded-xl text-[11px] sm:text-xs font-medium leading-relaxed bg-brand-light border-l-4 border-brand-teal text-brand-navy">
                                 請勾選左側老街景點，我們將立即為您產生客製化的交通建議！
                             </div>
                         </div>
@@ -232,124 +243,154 @@
             </div>
         </section>
 
-        <section class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
-            <div class="glass-card p-6">
-                <h3 class="text-xl font-bold text-brand-navy mb-4 border-b border-brand-yellow/30 pb-2">📊 自訂行程：時間分配佔比連動</h3>
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 mb-8 md:mb-12">
+            <div class="glass-card p-4 sm:p-6">
+                <h3 class="text-lg sm:text-xl font-bold text-brand-navy mb-4 border-b border-brand-yellow/30 pb-2">📊 自訂行程：時間分配佔比連動</h3>
                 <div class="chart-container">
                     <canvas id="timeAllocationChart"></canvas>
                 </div>
             </div>
-            <div class="glass-card p-6">
-                <h3 class="text-xl font-bold text-brand-navy mb-4 border-b border-brand-yellow/30 pb-2">🚶 每日步行體力消耗動態連動</h3>
+            <div class="glass-card p-4 sm:p-6">
+                <h3 class="text-lg sm:text-xl font-bold text-brand-navy mb-4 border-b border-brand-yellow/30 pb-2">🚶 每日步行體力消耗動態連動</h3>
                 <div class="chart-container">
                     <canvas id="dailyEnergyChart"></canvas>
                 </div>
             </div>
         </section>
 
-        <section class="mb-12">
-            <div class="glass-card p-6">
-                <h3 class="text-xl font-bold text-brand-navy mb-4 border-b border-brand-yellow/30 pb-2 text-center">🍜 舌尖上的廈門風味指標即時更新</h3>
+        <section class="mb-8 md:mb-12">
+            <div class="glass-card p-4 sm:p-6">
+                <h3 class="text-lg sm:text-xl font-bold text-brand-navy mb-4 border-b border-brand-yellow/30 pb-2 text-center">🍜 舌尖上的廈門風味指標即時更新</h3>
                 <div class="max-w-2xl mx-auto">
-                    <div class="chart-container" style="height: 380px;">
+                    <div class="chart-container" style="height: 320px; sm:height: 380px;">
                         <canvas id="foodRadarChart"></canvas>
                     </div>
                 </div>
             </div>
         </section>
 
-        <section class="mb-12">
-            <h2 class="text-3xl font-bold text-brand-navy border-b-4 border-brand-yellow inline-block mb-8 pb-2">📖 廈門老街殿堂級美食百科</h2>
+        <section class="mb-8 md:mb-12">
+            <h2 class="text-2xl sm:text-3xl font-bold text-brand-navy border-b-4 border-brand-yellow inline-block mb-6 pb-2">📖 廈門老街殿堂級美食百科</h2>
             
-            <p class="text-gray-600 mb-8 leading-relaxed text-sm md:text-base">
-                在廈門的歷史老街（如八市、大同路、百家村、大社）散步，嘴巴絕對不能停。這裡的每一道經典傳統點心背後，都有著數十年甚至百年的歲月傳承。以下為您整理最具代表性的閩南美食深度介紹與品嚐攻略：
+            <p class="text-gray-600 mb-6 leading-relaxed text-xs sm:text-sm">
+                在廈門的歷史老街散步，嘴巴絕對不能停。這裡的每一道經典傳統點心背後，都有著數十年甚至百年的歲月傳承。以下為您整理最具代表性的閩南美食深度介紹與品嚐攻略：
             </p>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="glass-card p-6 border-l-4 border-brand-coral bg-white">
+                <div class="glass-card p-4 sm:p-6 border-l-4 border-brand-coral bg-white">
                     <div class="flex justify-between items-start mb-3">
-                        <h3 class="text-xl font-black text-brand-navy">🍜 沙茶麵 (Satay Noodles)</h3>
-                        <span class="text-xs bg-brand-coral/10 text-brand-coral px-2.5 py-1 rounded-full font-bold">島內靈魂</span>
+                        <h3 class="text-lg sm:text-xl font-black text-brand-navy">🍜 沙茶麵 (Satay Noodles)</h3>
+                        <span class="text-[10px] bg-brand-coral/10 text-brand-coral px-2 py-0.5 rounded-full font-bold">島內靈魂</span>
                     </div>
-                    <p class="text-sm text-gray-600 leading-relaxed mb-4">
-                        <b>美食由來：</b>源自南洋的「沙嗲（Satay）」，由早期下南洋的閩籍華僑帶回廈門，與本土飲食融合，演變成了極具閩南特色的沙茶湯頭。正宗的沙茶湯呈亮橘紅色，以蝦皮、魚乾、洋蔥、蒜頭、芝麻以及濃郁的<b>花生醬</b>慢火熬製，口感濃郁、微辣帶甜。
+                    <p class="text-xs sm:text-sm text-gray-600 leading-relaxed mb-4">
+                        源自南洋的「沙嗲」，由早期下南洋的閩籍華僑帶回廈門，演變成了極具閩南特色的沙茶湯頭。湯頭呈橘紅色，以蝦皮、魚乾、洋蔥、蒜頭、芝麻以及濃郁的花生醬慢火熬製，口感濃郁、微辣帶甜。
                     </p>
-                    <div class="text-xs text-brand-navy font-bold bg-brand-light p-3 rounded-lg">
-                        💡 <b>如何點餐與吃法：</b>店家通常有一大鍋滾燙的沙茶湯與配料櫃。您先選麵體（一般是鹼性的黃麵），然後自主挑選配料（推薦必加：大腸、新鮮小卷/魷魚、鴨血、豆腐吸飽湯汁）。最後淋上滾燙沙茶湯，香氣四溢。
+                    <div class="text-[11px] text-brand-navy font-bold bg-brand-light p-2.5 sm:p-3 rounded-lg">
+                        💡 點餐吃法：自選麵體與配料。推薦配料：大腸、新鮮小卷、鴨血、油豆腐（吸飽沙茶湯汁完美爆汁）。
                     </div>
                 </div>
 
-                <div class="glass-card p-6 border-l-4 border-brand-teal bg-white">
+                <div class="glass-card p-4 sm:p-6 border-l-4 border-brand-teal bg-white">
                     <div class="flex justify-between items-start mb-3">
-                        <h3 class="text-xl font-black text-brand-navy">🍢 閩南五香卷 (Ngoh Hiang)</h3>
-                        <span class="text-xs bg-brand-teal/10 text-brand-teal px-2.5 py-1 rounded-full font-bold">炸物之王</span>
+                        <h3 class="text-lg sm:text-xl font-black text-brand-navy">🍢 閩南五香卷 (Ngoh Hiang)</h3>
+                        <span class="text-[10px] bg-brand-teal/10 text-brand-teal px-2 py-0.5 rounded-full font-bold">炸物之王</span>
                     </div>
-                    <p class="text-sm text-gray-600 leading-relaxed mb-4">
-                        <b>美食由來：</b>每逢閩南傳統節日或宴席必不可少的硬菜。使用極薄的豆腐皮，包裹著用五香粉調味、肥瘦相間的鮮豬肉丁、馬蹄（荸起）碎、扁魚粉 and 青蔥，手工捲成條狀，再放入大油鍋中現炸至外表金黃酥脆。
+                    <p class="text-xs sm:text-sm text-gray-600 leading-relaxed mb-4">
+                        閩南傳統節日或宴席必不可少的硬菜。用極薄豆腐皮包裹五香粉調味、肥瘦相間的豬肉丁、馬蹄碎與青蔥捲成條，下油鍋炸至金黃。咬下去外皮酥脆，內裡馬蹄碎爽脆清甜，多汁解膩。
                     </p>
-                    <div class="text-xs text-brand-navy font-bold bg-brand-light p-3 rounded-lg">
-                        💡 <b>老街吃法與推薦：</b>現點現炸，起鍋後店家會用剪刀迅速剪成小段，露出裡面飽滿多汁的肉餡。咬下去外皮無比香脆，內裡的荸薺碎帶來爽脆清甜，解膩又多汁。搭配甜辣醬是經典吃法。
+                    <div class="text-[11px] text-brand-navy font-bold bg-brand-light p-2.5 sm:p-3 rounded-lg">
+                        💡 點餐吃法：一定要現炸現吃，蘸上特製甜辣醬最對味。
                     </div>
                 </div>
 
-                <div class="glass-card p-6 border-l-4 border-brand-yellow bg-white">
+                <div class="glass-card p-4 sm:p-6 border-l-4 border-brand-yellow bg-white">
                     <div class="flex justify-between items-start mb-3">
-                        <h3 class="text-xl font-black text-brand-navy" style="color: #bfa004;">🥟 大社與大同路芋包</h3>
-                        <span class="text-xs bg-yellow-500/10 text-yellow-600 px-2.5 py-1 rounded-full font-bold">非物質文化遺產</span>
+                        <h3 class="text-lg sm:text-xl font-black text-brand-navy" style="color: #bfa004;">🥟 閩南芋包 (Taro Dumpling)</h3>
+                        <span class="text-[10px] bg-yellow-500/10 text-yellow-600 px-2 py-0.5 rounded-full font-bold">非遺美食</span>
                     </div>
-                    <p class="text-sm text-gray-600 leading-relaxed mb-4">
-                        <b>美食由來：</b>這是一道工藝複雜的手工點心。老廈門人常說「沒吃過芋包等於沒來過廈門」。芋包的外皮不含一點麵粉，而是將新鮮荔浦芋頭蒸熟後搗成極其細膩的芋泥，包裹著由筍乾、豬肉丁、香菇、蝦米和豆干製成的飽滿內餡，送入蒸籠蒸熟。
+                    <p class="text-xs sm:text-sm text-gray-600 leading-relaxed mb-4">
+                        工藝複雜的手工美味。外皮不含麵粉，而是用香濃的荔浦芋頭蒸熟搗成細膩芋泥做皮，包裹筍乾、豬肉丁、香菇、蝦米蒸熟。
                     </p>
-                    <div class="text-xs text-brand-navy font-bold bg-brand-light p-3 rounded-lg">
-                        💡 <b>老街吃法與推薦：</b>熱氣騰騰的芋包端上桌，外皮軟糯綿密，芋香撲鼻，內餡鹹香豐腴。最正宗的吃法必須淋上廈門特製的<b>甜辣醬</b>與<b>芥末醬</b>，甜辣中帶有一絲微嗆，風味極富層次！
+                    <div class="text-[11px] text-brand-navy font-bold bg-brand-light p-2.5 sm:p-3 rounded-lg">
+                        💡 點餐吃法：淋上廈門特製的甜辣醬與芥末醬，微甜辣中帶有一絲微嗆，芋香濃郁。
                     </div>
                 </div>
 
-                <div class="glass-card p-6 border-l-4 border-brand-navy bg-white">
+                <div class="glass-card p-4 sm:p-6 border-l-4 border-brand-navy bg-white">
                     <div class="flex justify-between items-start mb-3">
-                        <h3 class="text-xl font-black text-brand-navy">🥣 麵線糊 (Mee Sua Kor)</h3>
-                        <span class="text-xs bg-brand-navy/10 text-brand-navy px-2.5 py-1 rounded-full font-bold">晨間市井溫柔</span>
+                        <h3 class="text-lg sm:text-xl font-black text-brand-navy">🥣 麵線糊 (Mee Sua Kor)</h3>
+                        <span class="text-[10px] bg-brand-navy/10 text-brand-navy px-2 py-0.5 rounded-full font-bold">晨間溫柔</span>
                     </div>
-                    <p class="text-sm text-gray-600 leading-relaxed mb-4">
-                        <b>美食由來：</b>以細如髮絲的閩南手工麵線，放入以豬骨、蝦糠慢火熬製的清甜高湯中，加入地瓜粉勾芡，熬煮到麵線化開、湯汁呈半糊狀。味道極其鮮美、順滑滑口，是無數老廈門人最愛的早餐與午後半點。
+                    <p class="text-xs sm:text-sm text-gray-600 leading-relaxed mb-4">
+                        細如髮絲的手工麵線在豬骨、蝦糠高湯中煮至化開，加入地瓜粉勾成半糊狀。味道鮮美順滑，是老廈門人最愛的早餐與深夜暖胃首選。
                     </p>
-                    <div class="text-xs text-brand-navy font-bold bg-brand-light p-3 rounded-lg">
-                        💡 <b>老街吃法與推薦：</b>點一碗基礎麵線糊，然後在攤位前加料（大腸、醋肉、鮮蚵、煎蛋）。吃的時候一定要另外點一根<b>現炸油條</b>，把油條剪成段浸泡在熱騰騰的麵線糊裡，吸飽湯汁後一口咬下，非常過癮！
+                    <div class="text-[11px] text-brand-navy font-bold bg-brand-light p-2.5 sm:p-3 rounded-lg">
+                        💡 點餐吃法：加入大腸、醋肉或鮮蚵，另外配上一根現炸油條，泡在糊湯裡吃最讚。
                     </div>
                 </div>
             </div>
         </section>
 
-        <section class="mb-12 bg-[#FFFEE0] border-2 border-brand-yellow rounded-2xl p-6">
-            <h3 class="text-xl font-black text-brand-navy mb-4 flex items-center">
+        <section class="mb-8 md:mb-12 bg-[#FFFEE0] border-2 border-brand-yellow rounded-2xl p-4 sm:p-6">
+            <h3 class="text-lg sm:text-xl font-black text-brand-navy mb-4 flex items-center">
                 <span>🛡️ 廈門老街吃貨「防坑與實用避坑指南」</span>
             </h3>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-xs md:text-sm text-brand-navy font-medium leading-relaxed">
-                <div class="space-y-2">
-                    <h4 class="font-bold text-brand-coral text-sm">🦀 1. 海鮮大排檔點餐防坑公式</h4>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-xs sm:text-sm text-brand-navy font-medium leading-relaxed">
+                <div class="space-y-1">
+                    <h4 class="font-bold text-brand-coral text-sm sm:text-base">🦀 1. 海鮮大排檔點餐防坑公式</h4>
                     <p class="text-gray-600">
-                        去八市或中山路大排檔點海鮮，<b>秤重前務必在袋子底下戳個小洞放水</b>，並向店家確認「一斤」是多少克（大陸的一斤為 500 克）。下鍋前必須問清楚「加工費」是算盤還是算隻、算斤，避免結帳時出現爭議。推薦去明碼標價、口碑極佳的老字號（如醉壹號）。
+                        去八市或大排檔點海鮮，秤重前務必在塑膠袋底下戳個小洞放水，確認計價單位與加工費，避免被多算。推薦去明碼標價、口碑極佳的老字號（如醉壹號）。
                     </p>
                 </div>
-                <div class="space-y-2">
-                    <h4 class="font-bold text-brand-teal text-sm">🎫 2. 老國營飯堂「換票點餐」體驗</h4>
+                <div class="space-y-1">
+                    <h4 class="font-bold text-brand-teal text-sm sm:text-base">🎫 2. 老國營飯堂「換票點餐」體驗</h4>
                     <p class="text-gray-600">
-                        在大同路走訪老牌國營店<b>「佳味再添」</b>時，這裡不流行手機掃碼，您需要先去門口的「收銀台」排隊。告訴店員您要點什麼，付現或刷卡後店員會給您幾張彩色的紙質票券（如：芋包票、肉粽票）。您需要拿著票去不同的檔口排隊，憑票向大媽兌換食物，非常復古好玩！
+                        在大同路老字號「佳味再添」，您需要先去門口收銀台買票（會拿到粉綠、粉紅的紙券），再憑票去不同檔口排隊向大媽領取食物，非常具有年代感！
                     </p>
                 </div>
-                <div class="space-y-2">
-                    <h4 class="font-bold text-brand-navy text-sm">🌶️ 3. 認準老街靈魂「甜辣醬」</h4>
+                <div class="space-y-1">
+                    <h4 class="font-bold text-brand-navy text-sm sm:text-base">🌶️ 3. 認準老街靈魂「甜辣醬」</h4>
                     <p class="text-gray-600">
-                        閩南小吃的精髓在於醬料。廈門本土品牌的<b>「廈門甜辣醬」</b>（如：海堤牌）味道微甜帶酸，辣度極低，是用來沾五香卷、芋包、手撕雞、海鮮大排檔的萬能配料。只要看見桌上有擺著玻璃瓶裝的粉橘色甜辣醬，大膽擠下去就對了！
+                        閩南小吃的靈魂在於醬料。廈門本土品牌的甜辣醬微甜帶酸，辣度極低，是用來沾五香卷、海蠣煎、手撕雞的萬能神器，桌上看見大膽淋下去就對了！
                     </p>
                 </div>
             </div>
         </section>
 
+        <footer class="text-center text-xs text-gray-400 mt-8 pt-6 border-t">
+            <p>Generated for Xiamen 5D4N Itinerary Analysis. Responsive Touch Support Active.</p>
+        </footer>
+
+    </div>
+
+    <div id="mobileFloatingBar" class="fixed bottom-0 left-0 right-0 bg-brand-navy text-white p-3.5 shadow-2xl flex justify-between items-center z-50 lg:hidden border-t border-brand-teal/20 backdrop-blur-md bg-opacity-95">
+        <div class="flex gap-4 text-xs sm:text-sm font-black">
+            <div>🚗 <span id="floatCost" class="text-brand-coral">¥0</span></div>
+            <div>👣 <span id="floatSteps" class="text-brand-teal">0萬步</span></div>
+            <div>🍲 <span id="floatFood" class="text-brand-yellow">0個</span></div>
+        </div>
+        <button onclick="scrollToSummary()" class="bg-brand-coral active:scale-90 transition text-white px-3 py-1.5 rounded-lg text-xs font-black">查看細目 ➔</button>
     </div>
 
     <script>
         const ATTRACTION_DATABASE = [
+            {
+                id: 'jiangtou',
+                name: '江頭市場 (飯店下樓即達・最道地菜市)',
+                category: 'food',
+                categoryLabel: '老街美食',
+                taxiTime: 4,
+                taxiFare: 0,
+                steps: 0.8,
+                foodScore: 10,
+                shopScore: 5,
+                cultureScore: 8,
+                travelScore: 6,
+                rating: 5,
+                desc: '距離亞朵酒店台灣街店步行僅約 500 公尺！沒有八市的觀光喧囂，全是本地人日常生活採買的溫柔煙火氣，平價小吃的天堂。',
+                tip: '精選必吃店家：【戴氏大腸包小腸】(外皮香脆，料滿多汁，¥12)；【江頭無名砂鍋店】(砂鍋麵配料自選，湯鮮粉滑，¥15)；【現做手工麻糬】(Q彈裹滿花生粉，¥1/個)；【當季新鮮切芒果/荔枝果攤】。',
+                vendors: ['戴氏大腸包小腸', '江頭無名砂鍋', '現做手工花生麻糬', '在地當季鮮果攤']
+            },
             {
                 id: 'zhongshan',
                 name: '中山路步行街與局口老老巷',
@@ -465,7 +506,7 @@
                 cultureScore: 3,
                 travelScore: 9,
                 rating: 5,
-                desc: '廈門定位最高端的新奢旗艦商場，網紅與頂級精緻餐飲聚集地。',
+                desc: '廈門定位最高端的新奢旗艦商場，年輕網紅與精緻餐飲聚集地。',
                 tip: '精選必吃店家：【裕蓮茶樓】(茶香蛋塔¥12/個，酥脆排隊王)；地下美食街精緻餐飲極多。',
                 vendors: ['裕蓮茶樓茶香蛋塔', '萬象城精緻粵菜']
             },
@@ -567,8 +608,8 @@
                 cultureScore: 9,
                 travelScore: 7,
                 rating: 5,
-                desc: '隱藏在繁華市區老別墅區裡的花市老街，塞滿了芬芳鮮花和極具年代感的復古騎樓。',
-                tip: '緊鄰百家村，適合買一小束花慢行散步拍照。氛圍寧靜溫馨，老洋房林立。',
+                desc: '隱藏在繁華市區老別墅區裡的花市老街，塞滿了鮮花、綠植和復古歐式建築。',
+                tip: '緊鄰百家村，適合買一小束花、在老洋房與老騎樓下慢行散步拍照。氛圍寧靜溫馨，老洋房林立。',
                 vendors: ['溪岸路老別墅街景']
             },
             {
@@ -590,7 +631,7 @@
             }
         ];
 
-        let selectedIds = ['bashi', 'baijiacun', 'datong', 'smplaza', 'mixc', 'shapowei', 'zhongshan', 'jimei', 'seametro', 'biandougan'];
+        let selectedIds = ['jiangtou', 'bashi', 'baijiacun', 'datong', 'smplaza', 'mixc', 'shapowei', 'zhongshan', 'jimei', 'seametro', 'biandougan'];
         let selectedFoodMap = {}; 
         let currentFilter = 'all';
 
@@ -653,9 +694,9 @@
             tabs.forEach(t => {
                 const el = document.getElementById(`tab-${t}`);
                 if (t === cat) {
-                    el.className = "px-3 py-1 text-xs font-bold rounded-lg transition bg-white text-brand-navy shadow-sm";
+                    el.className = "flex-none px-3.5 py-2 text-xs font-bold rounded-lg transition bg-white text-brand-navy shadow-sm";
                 } else {
-                    el.className = "px-3 py-1 text-xs font-bold rounded-lg transition text-gray-500 hover:text-brand-navy";
+                    el.className = "flex-none px-3.5 py-2 text-xs font-bold rounded-lg transition text-gray-500 hover:text-brand-navy";
                 }
             });
             renderAttractionPool();
@@ -757,7 +798,7 @@
 
         function quickLoadPreset(type) {
             if (type === 'classic') {
-                selectedIds = ['bashi', 'baijiacun', 'datong', 'smplaza', 'mixc', 'shapowei', 'zhongshan', 'jimei', 'seametro', 'biandougan'];
+                selectedIds = ['jiangtou', 'bashi', 'baijiacun', 'datong', 'smplaza', 'mixc', 'shapowei', 'zhongshan', 'jimei', 'seametro', 'biandougan'];
             } else if (type === 'shopping') {
                 selectedIds = ['smplaza', 'mixc', 'zhongshan', 'shapowei', 'bashi', 'biandougan'];
             }
@@ -771,6 +812,10 @@
             selectedFoodMap = {};
             filterCategory('all');
             updateCalculations();
+        }
+
+        function scrollToSummary() {
+            document.getElementById('selectedSummaryCard').scrollIntoView({ behavior: 'smooth' });
         }
 
         function updateCalculations() {
@@ -829,6 +874,10 @@
             document.getElementById('kpiSteps').innerText = `${totalSteps.toFixed(1)} 萬步`;
             document.getElementById('kpiFoodCount').innerText = `${foodCount} 個`;
 
+            document.getElementById('floatCost').innerText = `¥${totalTaxiCost}`;
+            document.getElementById('floatSteps').innerText = `${totalSteps.toFixed(1)}萬步`;
+            document.getElementById('floatFood').innerText = `${foodCount}個`;
+
             const summaryList = document.getElementById('selectedSummaryList');
             summaryList.innerHTML = '';
             if (activeItems.length === 0) {
@@ -864,19 +913,19 @@
             } else {
                 let adviceParts = [];
                 if (totalTaxiCost > 150) {
-                    adviceParts.push("⚠️ <b>車資提醒：</b>您的預估總計程車資為 ¥" + totalTaxiCost + " (已包含往返程)。島外集美學村的計程車資占比較高。您可以與旅伴分攤，或考慮去程搭乘好玩的海上地鐵省預算！");
+                    adviceParts.push("⚠️ <b>車資提醒：</b>您的預估總計程車資為 ¥" + totalTaxiCost + " (已包含往返程)。包含江頭市場、SM廣場的本地段完全零交通車資，完美利用了地理位置優勢！");
                 } else {
-                    adviceParts.push("✅ <b>車資點評：</b>總車資非常划算！回飯店的車資也已精準計入。每人均分下來交通費極低，點對點計程車是最優解。");
+                    adviceParts.push("✅ <b>車資點評：</b>總車資極其合理划算！回酒店車資已補齊。第一天的江頭市場與SM廣場行程直接步行，為您省下許多開銷！");
                 }
 
                 if (totalSteps > 6) {
-                    adviceParts.push("🏃 <b>體力提醒：</b>總預估步數高達 " + totalSteps.toFixed(1) + " 萬步。這是一次高強度的老街吃逛行程！強烈建議每天走完行程後，去老街安排一次閩南足浴按摩，放鬆雙腳。");
+                    adviceParts.push("🏃 <b>體力提醒：</b>總預估步數為 " + totalSteps.toFixed(1) + " 萬步。老街吃逛強度拉滿，建議第一天下午逛完江頭市場與SM廣場後在酒店稍微歇腳。");
                 } else {
                     adviceParts.push("🚲 <b>體力點評：</b>行程強度適中，有充分的時間享受老街與美食，不會過度勞累。");
                 }
 
                 if (foodCount >= 10) {
-                    adviceParts.push("🍲 <b>風味偏好：</b>規劃了高達 " + foodCount + " 個老街美食踩點！這是一份以「吃」為絕對核心的極致老街老饕路線！");
+                    adviceParts.push("🍲 <b>風味偏好：</b>規劃了高達 " + foodCount + " 個老街美食踩點！加入了酒店旁的【江頭市場】後，您每天都可以享受滿滿的在地古早風味！");
                 }
 
                 adviceText = adviceParts.join("<br><br>");
@@ -935,7 +984,7 @@
                     if (item.category === 'food') {
                         f1 += 2; f4 += 1.5;
                     }
-                    if (item.id === 'bashi' || item.id === 'biandougan') f2 += 3.5;
+                    if (item.id === 'bashi' || item.id === 'biandougan' || item.id === 'jiangtou') f2 += 3.5;
                     if (item.category === 'shopping') f3 += 2;
                     if (item.id === 'jimei' || item.id === 'seametro') f5 += 2.5;
                 });
